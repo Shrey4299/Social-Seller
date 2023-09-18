@@ -1,7 +1,6 @@
 const db = require("../models");
 const User = db.users;
-
-const generateToken = require("../services/authService"); 
+const generateToken = require("../services/authService");
 const bcrypt = require("bcrypt");
 
 exports.login = async (req, res) => {
@@ -14,12 +13,13 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    if (password != user.password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = generateToken(user);
-
 
     res.status(200).json({ message: "Login successful", token: token });
   } catch (error) {

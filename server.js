@@ -1,13 +1,14 @@
 const express = require("express");
 const app = express();
 const routes = require("./routes");
-const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const db = require("./models");
+const path = require("path");
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 db.sequelize
   .sync()
@@ -19,7 +20,8 @@ db.sequelize
     console.log("Failed to sync db: " + err.message);
   });
 
-app.use("/api", routes);
+app.use("", routes);
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

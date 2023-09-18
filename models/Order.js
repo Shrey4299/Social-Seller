@@ -26,6 +26,15 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
+    razorpayId: {
+      type: DataTypes.STRING,
+    },
+    razorpayOrderId: {
+      type: DataTypes.STRING,
+    },
+    isPaid: {
+      type: DataTypes.BOOLEAN,
+    },
   });
 
   return Order;

@@ -1,32 +1,46 @@
 const db = require("../models");
 const Order = db.orders;
+const Product = db.products;
 
-exports.create = (req, res) => {
-  if (!req.body.quantity || !req.body.price) {
-    res.status(400).send({
-      message: "Quantity and price are required fields!",
-    });
-    return;
-  }
+exports.create = async (req, res) => {
+  try {
+    const { quantity, UserId, status, payment, ProductId } = req.body;
 
-  const order = {
-    quantity: req.body.quantity,
-    price: req.body.price,
-    UserId: req.body.UserId,
-    status: req.body.status,
-    payment: req.body.payment,
-    ProductId: req.body.ProductId,
-  };
-
-  Order.create(order)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the Order.",
+    if (!quantity || !UserId || !ProductId) {
+      return res.status(400).send({
+        message: "Quantity, UserId, and ProductId are required fields!",
       });
+    }
+
+    const product = await Product.findOne({
+      where: {
+        id: ProductId,
+      },
     });
+
+    if (!product) {
+      return res.status(404).send({
+        message: "Product not found",
+      });
+    }
+
+    const order = {
+      quantity: quantity,
+      price: product.price * quantity,
+      UserId: UserId,
+      status: status,
+      payment: payment,
+      ProductId: ProductId,
+    };
+
+    const createdOrder = await Order.create(order);
+
+    res.status(201).send(createdOrder);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the Order.",
+    });
+  }
 };
 
 exports.findAll = (req, res) => {
