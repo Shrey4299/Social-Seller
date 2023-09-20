@@ -42,6 +42,7 @@ router.get("/product/:id", productController.findOne);
 router.post(
   "/product",
   authenticate("authenticated"),
+  productController.upload,
   productController.create
 );
 router.put(
@@ -49,7 +50,7 @@ router.put(
   authenticate("authenticated"),
   productController.update
 );
-router.delete("/product/:id", authenticate("admin"), productController.delete);
+router.delete("/product/:id", authenticate("admin"), productController.remove);
 
 // Order Routes
 router.get("/order", orderController.findAll);

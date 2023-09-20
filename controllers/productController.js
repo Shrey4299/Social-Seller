@@ -1,5 +1,32 @@
 const db = require("../models");
 const Product = db.products;
+const multer = require("multer");
+const path = require("path");
+
+// Function to handle image upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "Images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+exports.upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 }, // Changed the string to a number
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const mimeType = fileTypes.test(file.mimetype);
+    const extname = fileTypes.test(path.extname(file.originalname));
+
+    if (mimeType && extname) {
+      return cb(null, true);
+    }
+    cb("Give proper files format to upload");
+  },
+}).single("image");
 
 exports.create = (req, res) => {
   if (
@@ -17,6 +44,7 @@ exports.create = (req, res) => {
   }
 
   const product = {
+    image: req.file.path,
     name: req.body.name,
     category: req.body.category,
     color: req.body.color,
@@ -94,7 +122,7 @@ exports.update = (req, res) => {
     });
 };
 
-exports.delete = (req, res) => {
+exports.remove = (req, res) => {
   const id = req.params.id;
 
   Product.destroy({

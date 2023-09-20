@@ -8,7 +8,24 @@
 
   <body>
     <hr />
-
+    <h1>List of Orders</h1>
+    <ul>
+      <% orders.forEach(order => { %>
+      <li>
+        <strong>Order ID:</strong> <%= order.id %><br />
+        <strong>Product:</strong> <%= order.product %><br />
+        <strong>Amount:</strong> Rs. <%= order.price %><br />
+        <strong>Qauntity:</strong> <%= order.quantity %><br />
+        <strong>Description:</strong> <%= order.slug %><br />
+      </li>
+      <form class="pay-form">
+        <input type="hidden" name="name" value="Shirt" />
+        <input type="hidden" name="amount" value="<%= order.price %>" />
+        <input type="hidden" name="description" value="Shirt Buying" />
+        <input type="submit" value="Pay Now" />
+      </form>
+      <% }); %>
+    </ul>
     <div style="display: inline-block">
       <img
         src="https://cdn.pixabay.com/photo/2014/04/03/10/55/t-shirt-311732_960_720.png"
@@ -17,30 +34,7 @@
         height="100px"
       />
       <p>Shirt</p>
-      <p><b>Amount:- Rs. 500</b></p>
-      <form class="pay-form">
-        <input type="hidden" name="name" value="Shirt" />
-        <input type="hidden" name="amount" value="500" />
-        <input type="hidden" name="description" value="Shirt Buying" />
-        <input type="submit" value="Pay Now" />
-      </form>
-    </div>
-
-    <div style="display: inline-block">
-      <img
-        src="https://cdn.pixabay.com/photo/2013/07/12/18/20/shoes-153310_960_720.png"
-        alt=""
-        width="100px"
-        height="100px"
-      />
-      <p>Shoes</p>
-      <p><b>Amount:- Rs. 1500</b></p>
-      <form class="pay-form">
-        <input type="hidden" name="name" value="Shoes" />
-        <input type="hidden" name="amount" value="1500" />
-        <input type="hidden" name="description" value="Shoes Buying" />
-        <input type="submit" value="Pay Now" />
-      </form>
+      <!-- <p><b>Amount:- Rs. 500</b></p> -->
     </div>
   </body>
 </html>

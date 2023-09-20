@@ -1,5 +1,6 @@
 const Razorpay = require("razorpay");
 require("dotenv").config();
+const db = require("../models");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -10,10 +11,10 @@ const razorpayInstance = new Razorpay({
   key_secret: RAZORPAY_SECRET_KEY,
 });
 
-
 const renderProductPage = async (req, res) => {
   try {
-    res.render("product");
+    const orders = await db.orders.findAll(); // Assuming your model is named 'Order'
+    res.render("product", { orders });
   } catch (error) {
     console.log(error.message);
   }
