@@ -1,17 +1,19 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  // console.log(sequelize);
-  const Product = sequelize.define("Product", {
+  const Discount = sequelize.define("Discount", {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
-    description: {
-      type: DataTypes.STRING,
+    validity: {
+      type: DataTypes.DATEONLY,
+    },
+    discountPercentage: {
+      type: DataTypes.INTEGER,
     },
   });
 
-  return Product;
+  return Discount;
 };

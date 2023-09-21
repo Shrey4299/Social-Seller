@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Razorpay Web-Integration</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
 
   <body>
@@ -26,16 +27,7 @@
       </form>
       <% }); %>
     </ul>
-    <div style="display: inline-block">
-      <img
-        src="https://cdn.pixabay.com/photo/2014/04/03/10/55/t-shirt-311732_960_720.png"
-        alt=""
-        width="100px"
-        height="100px"
-      />
-      <p>Shirt</p>
-      <!-- <p><b>Amount:- Rs. 500</b></p> -->
-    </div>
+    <div style="display: inline-block"></div>
   </body>
 </html>
 
@@ -48,11 +40,11 @@
 
       var formData = $(this).serialize();
 
-      $.ajax({
-        url: "/createOrder",
-        type: "POST",
-        data: formData,
-        success: function (res) {
+      axios
+        .post("/api/createOrder", formData)
+        .then(function (response) {
+          var res = response.data;
+
           if (res.success) {
             var options = {
               key: "" + res.key_id + "",
@@ -63,8 +55,26 @@
               image: "https://dummyimage.com/600x400/000/fff",
               order_id: "" + res.order_id + "",
               handler: function (response) {
-                alert("Payment Succeeded");
-                // window.open("/","_self")
+                console.log(response);
+                console.log(response.razorpay_order_id);
+                console.log(response.razorpay_payment_id);
+                console.log(response.razorpay_signature);
+
+                // Make a request for payment verification
+                axios
+                  .post("/api/verifyPayment", {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  })
+                  .then(function (response) {
+                    console.log(response);
+                    alert("Payment Succeeded");
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                    alert("Payment Verification Failed");
+                  });
               },
               prefill: {
                 contact: "" + res.contact + "",
@@ -86,8 +96,10 @@
           } else {
             alert(res.msg);
           }
-        },
-      });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     });
   });
 </script>

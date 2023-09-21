@@ -1,10 +1,12 @@
 const db = require("../models");
 const Order = db.orders;
 const Product = db.products;
+const Discount = db.discounts;
 
 exports.create = async (req, res) => {
   try {
-    const { quantity, UserId, status, payment, ProductId } = req.body;
+    const { quantity, UserId, status, payment, ProductId, couponCode } =
+      req.body;
 
     if (!quantity || !UserId || !ProductId) {
       return res.status(400).send({
@@ -18,6 +20,22 @@ exports.create = async (req, res) => {
       },
     });
 
+    const discount = await Discount.findOne({
+      where: {
+        name: couponCode,
+      },
+    });
+
+    console.log(discount.discountPercentage);
+
+    if (discount) {
+      var finalPrize =
+        product.price * quantity -
+        (product.price * quantity) / discount.discountPercentage;
+    } else {
+      var finalPrize = product.price * quantity;
+    }
+
     if (!product) {
       return res.status(404).send({
         message: "Product not found",
@@ -26,7 +44,7 @@ exports.create = async (req, res) => {
 
     const order = {
       quantity: quantity,
-      price: product.price * quantity,
+      price: finalPrize,
       UserId: UserId,
       status: status,
       payment: payment,

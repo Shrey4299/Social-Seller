@@ -20,7 +20,7 @@ db.sequelize
     console.log("Failed to sync db: " + err.message);
   });
 
-app.use("api", routes);
+app.use("/api", routes);
 
 app.use("/Images", express.static("./Images"));
 

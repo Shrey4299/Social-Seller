@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 require("dotenv").config();
 const db = require("../models");
+const crypto = require("crypto");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -40,7 +41,7 @@ const createOrder = async (req, res) => {
           product_name: req.body.name,
           description: req.body.description,
           contact: "8567345632",
-          name: "Sreyansh Dewangan",
+          name: "Shreyansh Dewangan",
           email: "shrey@gmail.com",
         });
       } else {
@@ -52,7 +53,27 @@ const createOrder = async (req, res) => {
   }
 };
 
+const verifyPayment = (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+
+  const generated_signature = crypto
+    .createHmac("sha256", RAZORPAY_SECRET_KEY)
+    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+    .digest("hex");
+
+  if (generated_signature === razorpay_signature) {
+    console.log(generated_signature);
+    console.log(razorpay_signature);
+    res.json({ success: true, message: "Payment successful" });
+  } else {
+    console.log("failed");
+    res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+};
+
 module.exports = {
   renderProductPage,
   createOrder,
+  verifyPayment,
 };

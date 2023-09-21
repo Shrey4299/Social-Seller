@@ -1,42 +1,9 @@
 const db = require("../models");
 const Product = db.products;
-const multer = require("multer");
-const path = require("path");
-
-// Function to handle image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "Images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-exports.upload = multer({
-  storage: storage,
-  limits: { fileSize: 1000000 }, // Changed the string to a number
-  fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif/;
-    const mimeType = fileTypes.test(file.mimetype);
-    const extname = fileTypes.test(path.extname(file.originalname));
-
-    if (mimeType && extname) {
-      return cb(null, true);
-    }
-    cb("Give proper files format to upload");
-  },
-}).single("image");
+const Variant = db.variants;
 
 exports.create = (req, res) => {
-  if (
-    !req.body.name ||
-    !req.body.category ||
-    !req.body.color ||
-    !req.body.size ||
-    !req.body.quantity ||
-    !req.body.price
-  ) {
+  if (!req.body.name || !req.body.CategoryId || !req.body.description) {
     res.status(400).send({
       message: "All fields are required!",
     });
@@ -44,13 +11,9 @@ exports.create = (req, res) => {
   }
 
   const product = {
-    image: req.file.path,
     name: req.body.name,
-    category: req.body.category,
-    color: req.body.color,
-    size: req.body.size,
-    quantity: req.body.quantity,
-    price: req.body.price,
+    description: req.body.description,
+    CategoryId: req.body.CategoryId,
   };
 
   Product.create(product)
@@ -78,10 +41,45 @@ exports.findAll = (req, res) => {
     });
 };
 
+exports.findProductByCategory = async (req, res) => {
+  const { category_name } = req.body;
+
+  // Validate request
+  if (!category_name) {
+    return res.status(400).send({
+      message: "Category name cannot be empty!",
+    });
+  }
+
+  const category = await Category.findOne({ where: { name: category_name } });
+
+  console.log(category);
+
+  Product.findAll({
+    where: {
+      CategoryId: category.id,
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving products.",
+      });
+    });
+};
+
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Product.findByPk(id)
+  Product.findByPk(id, {
+    include: [
+      { model: db.variants, as: "Variant" },
+      { model: db.reviews, as: "Reviews" },
+    ],
+  })
     .then((data) => {
       if (data) {
         res.send(data);
