@@ -30,6 +30,7 @@ db.discounts = require("./Discount")(sequelize, Sequelize);
 db.variants = require("./Variant")(sequelize, Sequelize);
 db.reviews = require("./Review")(sequelize, Sequelize);
 db.carts = require("./Cart")(sequelize, Sequelize);
+db.cartvariants = require("./CartVariant")(sequelize, Sequelize);
 
 db.users.hasMany(db.tutorials, { as: "Tutorial" });
 db.tutorials.belongsTo(db.users);
@@ -62,7 +63,9 @@ db.reviews.belongsTo(db.products);
 db.users.hasOne(db.carts);
 db.carts.belongsTo(db.users);
 
-db.variants.belongsToMany(db.carts);
-db.carts.hasMany(db.variants);
+db.carts.belongsToMany(db.variants, { through: "CartVariants" });
+db.variants.belongsToMany(db.carts, { through: "CartVariants" });
+db.cartvariants.belongsTo(db.carts);
+db.cartvariants.belongsTo(db.variants);
 
 module.exports = db;

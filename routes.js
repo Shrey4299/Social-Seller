@@ -12,10 +12,11 @@ const categoryController = require("./controllers/categoryController");
 const discountController = require("./controllers/discountController");
 const variantController = require("./controllers/variantController");
 const reviewController = require("./controllers/reviewController");
-const cartController = require("./controllers/cartController")
+const cartController = require("./controllers/cartController");
+
+
 
 const authenticate = require("./middlewares/authMiddleware");
-const { categories, variants } = require("./models");
 
 // User Routes
 router.post("/user", userController.create);
@@ -78,9 +79,11 @@ router.post(
   variantController.create
 );
 
-// cart 
+// cart
 router.post("/cart", cartController.create);
-
+router.post("/addToCart/user/:userId", cartController.addToCart); 
+router.get("/cartvariants/user/:userId", cartController.findOne);
+router.delete("/cartvariants/user/:userId", cartController.emptyCart);
 
 // Order Routes
 router.get("/order", orderController.findAll);
@@ -97,8 +100,6 @@ router.post(
   authenticate("authenticated"),
   addressController.create
 );
-
-
 
 // Payment Routes
 router.get("/", paymentController.renderProductPage);
