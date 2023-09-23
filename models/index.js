@@ -31,15 +31,13 @@ db.variants = require("./Variant")(sequelize, Sequelize);
 db.reviews = require("./Review")(sequelize, Sequelize);
 db.carts = require("./Cart")(sequelize, Sequelize);
 db.cartvariants = require("./CartVariant")(sequelize, Sequelize);
+db.ordervariants = require("./orderVariant")(sequelize, Sequelize);
 
 db.users.hasMany(db.tutorials, { as: "Tutorial" });
 db.tutorials.belongsTo(db.users);
 
 db.users.hasMany(db.roles, { as: "Role" });
 db.roles.belongsTo(db.users);
-
-db.users.hasMany(db.orders, { as: "Order" });
-db.orders.belongsTo(db.users);
 
 db.users.hasMany(db.address, { as: "Address" });
 db.address.belongsTo(db.users);
@@ -49,9 +47,6 @@ db.products.belongsTo(db.categories);
 
 db.products.hasMany(db.variants, { as: "Variant" });
 db.variants.belongsTo(db.products);
-
-db.products.hasMany(db.orders, { as: "Order" });
-db.orders.belongsTo(db.products);
 
 db.users.hasMany(db.reviews);
 db.reviews.belongsTo(db.users);
@@ -67,5 +62,8 @@ db.carts.belongsToMany(db.variants, { through: "CartVariants" });
 db.variants.belongsToMany(db.carts, { through: "CartVariants" });
 db.cartvariants.belongsTo(db.carts);
 db.cartvariants.belongsTo(db.variants);
+
+db.orders.hasMany(db.ordervariants, { as: "OrderVariants" });
+db.ordervariants.belongsTo(db.orders);
 
 module.exports = db;

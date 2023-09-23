@@ -13,8 +13,8 @@ const discountController = require("./controllers/discountController");
 const variantController = require("./controllers/variantController");
 const reviewController = require("./controllers/reviewController");
 const cartController = require("./controllers/cartController");
-
-
+const orderVariantController = require("./controllers/orderVariantController");
+const searchController = require("./controllers/searchController");
 
 const authenticate = require("./middlewares/authMiddleware");
 
@@ -26,25 +26,7 @@ router.put("/user/:id", authenticate("authenticated"), userController.update);
 router.delete("/user/:id", authenticate("admin"), userController.delete);
 router.post("/roles", roleController.create);
 router.post("/login", authController.login);
-
-// Tutorial Routes
-router.get("/tutorial", tutorialController.findAll);
-router.get("/tutorial/:id", tutorialController.findOne);
-router.post(
-  "/tutorial",
-  authenticate("authenticated"),
-  tutorialController.create
-);
-router.put(
-  "/tutorial/:id",
-  authenticate("authenticated"),
-  tutorialController.update
-);
-router.delete(
-  "/tutorial/:id",
-  authenticate("admin"),
-  tutorialController.delete
-);
+router.post("/address", addressController.create);
 
 // Product Routes
 router.get("/product", productController.findAll);
@@ -81,7 +63,7 @@ router.post(
 
 // cart
 router.post("/cart", cartController.create);
-router.post("/addToCart/user/:userId", cartController.addToCart); 
+router.post("/addToCart/user/:userId", cartController.addToCart);
 router.get("/cartvariants/user/:userId", cartController.findOne);
 router.delete("/cartvariants/user/:userId", cartController.emptyCart);
 
@@ -93,17 +75,13 @@ router.post(
   authenticate("authenticated"),
   discountController.create
 );
-
-// Address Routes
-router.post(
-  "/address",
-  authenticate("authenticated"),
-  addressController.create
-);
+router.post("/ordervariants", orderVariantController.create);
 
 // Payment Routes
 router.get("/", paymentController.renderProductPage);
 router.post("/createOrder", paymentController.createOrder);
 router.post("/verifyPayment", paymentController.verifyPayment);
+
+router.get("/search", searchController.searchProducts);
 
 module.exports = router;

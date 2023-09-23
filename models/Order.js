@@ -2,13 +2,9 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   const Order = sequelize.define("Order", {
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     price: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
     },
     status: {
       type: DataTypes.ENUM(
@@ -21,6 +17,9 @@ module.exports = (sequelize) => {
     },
     payment: {
       type: DataTypes.ENUM("COD", "prepaid"),
+    },
+    address: {
+      type: DataTypes.STRING,
     },
     slug: {
       type: DataTypes.UUID,
