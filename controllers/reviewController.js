@@ -5,7 +5,9 @@ const Review = db.reviews;
 
 exports.createReview = async (req, res) => {
   try {
-    const { description, rating, UserId, ProductId } = req.body;
+    const { description, rating } = req.body;
+    const ProductId = req.params.id;
+    const UserId = req.user.id;
 
     if (!description || !rating || !UserId || !ProductId) {
       return res.status(400).send({

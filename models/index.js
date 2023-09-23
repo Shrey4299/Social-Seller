@@ -63,7 +63,12 @@ db.variants.belongsToMany(db.carts, { through: "CartVariants" });
 db.cartvariants.belongsTo(db.carts);
 db.cartvariants.belongsTo(db.variants);
 
-db.orders.hasMany(db.ordervariants, { as: "OrderVariants" });
+db.users.hasOne(db.orders);
+db.orders.belongsTo(db.users);
+
+db.orders.belongsToMany(db.variants, { through: "OrderVariants" });
+db.variants.belongsToMany(db.orders, { through: "OrderVariants" });
 db.ordervariants.belongsTo(db.orders);
+db.ordervariants.belongsTo(db.variants);
 
 module.exports = db;

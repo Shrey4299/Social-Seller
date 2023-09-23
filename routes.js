@@ -13,7 +13,6 @@ const discountController = require("./controllers/discountController");
 const variantController = require("./controllers/variantController");
 const reviewController = require("./controllers/reviewController");
 const cartController = require("./controllers/cartController");
-const orderVariantController = require("./controllers/orderVariantController");
 const searchController = require("./controllers/searchController");
 
 const authenticate = require("./middlewares/authMiddleware");
@@ -24,15 +23,15 @@ router.get("/user", userController.findAll);
 router.get("/user/:id", userController.findOne);
 router.put("/user/:id", authenticate("authenticated"), userController.update);
 router.delete("/user/:id", authenticate("admin"), userController.delete);
-router.post("/roles", roleController.create);
+router.post("/roles/user/:id", roleController.create);
 router.post("/login", authController.login);
-router.post("/address", addressController.create);
+router.post("/address/user/:id", addressController.create);
 
 // Product Routes
 router.get("/product", productController.findAll);
 router.get("/product/:id", productController.findOne);
 router.post(
-  "/product",
+  "/product/category/:id",
   authenticate("authenticated"),
   productController.create
 );
@@ -42,8 +41,15 @@ router.put(
   productController.update
 );
 router.delete("/product/:id", authenticate("admin"), productController.remove);
-router.get("/product-by-category", productController.findProductByCategory);
-router.post("/reviews", reviewController.createReview);
+router.get(
+  "/products/category/:category_id",
+  productController.findProductByCategory
+);
+router.post(
+  "/reviews/product/:id",
+  authenticate("authenticated"),
+  reviewController.createReview
+);
 
 // categories
 router.get("/categories", categoryController.findAll);
@@ -55,17 +61,25 @@ router.post(
 
 // variants
 router.post(
-  "/variant",
+  "/variant/product/:id",
   authenticate("authenticated"),
   variantController.upload,
   variantController.create
 );
 
 // cart
-router.post("/cart", cartController.create);
-router.post("/addToCart/user/:userId", cartController.addToCart);
+router.post("/cart", authenticate("authenticated"), cartController.create);
+router.post(
+  "/addToCart/",
+  authenticate("authenticated"),
+  cartController.addToCart
+);
 router.get("/cartvariants/user/:userId", cartController.findOne);
-router.delete("/cartvariants/user/:userId", cartController.emptyCart);
+router.delete(
+  "/cartvariants/",
+  authenticate("authenticated"),
+  cartController.emptyCart
+);
 
 // Order Routes
 router.get("/order", orderController.findAll);
@@ -75,7 +89,12 @@ router.post(
   authenticate("authenticated"),
   discountController.create
 );
-router.post("/ordervariants", orderVariantController.create);
+
+router.post(
+  "/ordervariants",
+  authenticate("authenticated"),
+  orderController.createVariantOrder
+);
 
 // Payment Routes
 router.get("/", paymentController.renderProductPage);

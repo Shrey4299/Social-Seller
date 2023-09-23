@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     const size = req.body.size;
     const quantity = req.body.quantity;
     const price = req.body.price;
-    const ProductId = req.body.ProductId;
+    const ProductId = req.params.id;
     const image = req.file.path;
 
     // Validate request

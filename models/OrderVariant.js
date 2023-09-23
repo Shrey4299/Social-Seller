@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  const OrderVariant = sequelize.define("OrderVariant", {
+  const OrderVariants = sequelize.define("OrderVariants", {
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -12,5 +12,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  return OrderVariant;
+  return OrderVariants;
 };

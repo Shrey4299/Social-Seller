@@ -14,7 +14,7 @@ exports.create = (req, res) => {
   Role.create({
     title: title,
     description: description,
-    UserId: req.body.UserId,
+    UserId: req.params.id,
   })
     .then((role) => {
       res.send(role);

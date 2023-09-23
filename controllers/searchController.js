@@ -28,15 +28,38 @@ exports.searchProducts = async (req, res) => {
       ],
     });
 
-const category = await db.categories.findAll({
-  where: {
-    name: {
-      [Op.iLike]: `%${query}%`,
-    },
-  },
-});
+    const categories = await db.categories.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${query}%`,
+        },
+      },
+    });
 
-    res.send({ products , category});
+    const variants = await db.variants.findAll({
+      where: {
+        [Op.or]: [
+          {
+            color: {
+              [Op.iLike]: `%${query}%`,
+            },
+          },
+          {
+            size: {
+              [Op.iLike]: `%${query}%`,
+            },
+          },
+        ],
+      },
+      include: [
+        {
+          model: db.products,
+          as: "Product",
+        },
+      ],
+    });
+
+    res.send({ products, categories, variants });
   } catch (error) {
     console.error(error);
     res.status(500).send({

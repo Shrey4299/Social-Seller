@@ -3,7 +3,7 @@ const Product = db.products;
 const Variant = db.variants;
 
 exports.create = (req, res) => {
-  if (!req.body.name || !req.body.CategoryId || !req.body.description) {
+  if (!req.body.name || !req.body.description) {
     res.status(400).send({
       message: "All fields are required!",
     });
@@ -13,7 +13,7 @@ exports.create = (req, res) => {
   const product = {
     name: req.body.name,
     description: req.body.description,
-    CategoryId: req.body.CategoryId,
+    CategoryId: req.params.id,
   };
 
   Product.create(product)
@@ -42,18 +42,24 @@ exports.findAll = (req, res) => {
 };
 
 exports.findProductByCategory = async (req, res) => {
-  const { category_name } = req.body;
+  const { category_id } = req.params;
 
   // Validate request
-  if (!category_name) {
+  if (!category_id) {
     return res.status(400).send({
-      message: "Category name cannot be empty!",
+      message: "Category ID cannot be empty!",
     });
   }
 
-  const category = await Category.findOne({ where: { name: category_name } });
+  console.log(category_id);
 
-  console.log(category);
+  const category = await db.categories.findOne({ where: { id: category_id } });
+
+  if (!category) {
+    return res.status(404).send({
+      message: `Category with ID ${category_id} not found.`,
+    });
+  }
 
   Product.findAll({
     where: {

@@ -1,24 +1,19 @@
 const db = require("../models");
 const Order = db.orders;
-const Product = db.products;
 const Discount = db.discounts;
+const Address = db.address;
+const OrderVariant = db.ordervariants;
 
 exports.create = async (req, res) => {
   try {
-    const { quantity, UserId, status, payment, ProductId, couponCode } =
-      req.body;
+    const { payment, couponCode } = req.body;
+    const UserId = req.user.id;
 
-    if (!quantity || !UserId || !ProductId) {
+    if (!UserId || !payment) {
       return res.status(400).send({
-        message: "Quantity, UserId, and ProductId are required fields!",
+        message: "user and payment method are required fields!",
       });
     }
-
-    const product = await Product.findOne({
-      where: {
-        id: ProductId,
-      },
-    });
 
     const discount = await Discount.findOne({
       where: {
@@ -29,26 +24,24 @@ exports.create = async (req, res) => {
     console.log(discount.discountPercentage);
 
     if (discount) {
-      var finalPrize =
-        product.price * quantity -
-        (product.price * quantity) / discount.discountPercentage;
+      var finalPrize = -10;
     } else {
-      var finalPrize = product.price * quantity;
+      var finalPrize = 0;
     }
 
-    if (!product) {
-      return res.status(404).send({
-        message: "Product not found",
-      });
-    }
+    const address = await Address.findOne({
+      where: {
+        UserId: UserId,
+      },
+    });
 
     const order = {
-      quantity: quantity,
       price: finalPrize,
       UserId: UserId,
-      status: status,
       payment: payment,
-      ProductId: ProductId,
+      status: "new",
+      address: address.id,
+      isPaid: "false",
     };
 
     const createdOrder = await Order.create(order);
@@ -62,7 +55,7 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Order.findAll({ include: [{ model: db.products }] })
+  Order.findAll()
     .then((data) => {
       res.send(data);
     })
@@ -139,4 +132,43 @@ exports.delete = (req, res) => {
         message: "Could not delete Order with id=" + id,
       });
     });
+};
+
+exports.createVariantOrder = async (req, res) => {
+  const { quantity, VariantId } = req.body;
+
+  try {
+    const variant = await db.variants.findOne({
+      where: {
+        id: VariantId,
+      },
+    });
+
+    const UserId = req.user.id;
+
+    // Find all cart variants associated with the user
+    const order = await Order.findOne({
+      where: { UserId: UserId },
+    });
+
+    const orderVariant = await OrderVariant.create({
+      quantity: quantity,
+      price: variant.price,
+      OrderId: order.id,
+      VariantId: VariantId,
+    });
+
+    // Add the price to the existing price in the associated Order
+    const newPrice = order.price + quantity * variant.price;
+
+    // Update the price field in the associated Order
+    await order.update({ price: newPrice });
+
+    res.status(201).send(orderVariant);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Internal Server Error",
+    });
+  }
 };

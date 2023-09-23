@@ -5,7 +5,7 @@ const Variant = db.variants;
 
 exports.create = async (req, res) => {
   try {
-    const { UserId } = req.body;
+    const UserId = req.user.id;
 
     // Validate request
     if (!UserId) {
@@ -38,7 +38,7 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    const UserId = req.params.userId;
+    const UserId = req.user.id;
 
     console.log(UserId + " this is user id");
 
@@ -77,7 +77,6 @@ exports.addToCart = async (req, res) => {
 exports.findOne = async (req, res) => {
   try {
     const UserId = req.params.userId;
-
 
     const cartVariants = await CartVariant.findAll({
       // where: { CartId: { UserId: UserId } },
@@ -122,7 +121,7 @@ exports.findOne = async (req, res) => {
 
 exports.emptyCart = async (req, res) => {
   try {
-    const UserId = req.params.userId;
+    const UserId = req.user.id;
     const cart = await Cart.findOne({
       where: { UserId: UserId },
     });

@@ -14,7 +14,7 @@ exports.create = (req, res) => {
     State: req.body.State,
     City: req.body.City,
     Pincode: req.body.Pincode || null,
-    UserId: req.body.UserId ,
+    UserId: req.params.id,
   };
 
   Address.create(address)
