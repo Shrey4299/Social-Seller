@@ -22,10 +22,10 @@ exports.createReview = async (req, res) => {
       ProductId: ProductId,
     });
 
-    res.send(review);
+    return res.status(201).send(review); // Added status code and return
   } catch (error) {
     console.error(error);
-    res.status(500).send({
+    return res.status(500).send({
       message:
         error.message || "Some error occurred while creating the review.",
     });

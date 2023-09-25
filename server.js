@@ -22,7 +22,7 @@ db.sequelize
 
 app.use("/api", routes);
 
-app.use("/Images", express.static("./Images"));
+app.use("/uploads", express.static("./uploads"));
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

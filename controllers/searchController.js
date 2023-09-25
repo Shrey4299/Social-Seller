@@ -59,10 +59,10 @@ exports.searchProducts = async (req, res) => {
       ],
     });
 
-    res.send({ products, categories, variants });
+    return res.status(200).send({ products, categories, variants });
   } catch (error) {
     console.error(error);
-    res.status(500).send({
+    return res.status(500).send({
       message: "Internal Server Error",
     });
   }

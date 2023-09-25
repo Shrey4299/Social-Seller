@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("./controllers/userController");
-const tutorialController = require("./controllers/tutorialController");
 const productController = require("./controllers/productController");
 const orderController = require("./controllers/orderController");
 const addressController = require("./controllers/addressController");
@@ -14,6 +13,7 @@ const variantController = require("./controllers/variantController");
 const reviewController = require("./controllers/reviewController");
 const cartController = require("./controllers/cartController");
 const searchController = require("./controllers/searchController");
+const checkPaymentMiddleware = require("./middlewares/checkPayment");
 
 const authenticate = require("./middlewares/authMiddleware");
 
@@ -98,7 +98,11 @@ router.post(
 
 // Payment Routes
 router.get("/", paymentController.renderProductPage);
-router.post("/createOrder", paymentController.createOrder);
+router.post(
+  "/createOrder",
+  checkPaymentMiddleware,
+  paymentController.createOrder
+);
 router.post("/verifyPayment", paymentController.verifyPayment);
 
 router.get("/search", searchController.searchProducts);

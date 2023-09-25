@@ -5,15 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ab78c1f-4198-4de3-a787-1ef0d5f80020" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/orderController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/orderController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Order.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/User.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1695283878824.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695283878824.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1695300028240.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695300028240.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1695300204087.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695300204087.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1695455463225.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695455463225.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1695455554539.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695455554539.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/paymentController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/paymentController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/paymentController2.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/product.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/product.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +36,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/desktop/web devlopment/node js/razorpay-node"
+    "last_opened_file_path": "D:/desktop/web devlopment/node js/social seller assignment"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

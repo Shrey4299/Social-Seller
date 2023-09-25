@@ -54,8 +54,14 @@ const createOrder = async (req, res) => {
 };
 
 const verifyPayment = (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-    req.body;
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    order_id,
+  } = req.body;
+
+  console.log(order_id);
 
   const generated_signature = crypto
     .createHmac("sha256", RAZORPAY_SECRET_KEY)
@@ -63,9 +69,31 @@ const verifyPayment = (req, res) => {
     .digest("hex");
 
   if (generated_signature === razorpay_signature) {
-    console.log(generated_signature);
-    console.log(razorpay_signature);
-    res.json({ success: true, message: "Payment successful" });
+    db.orders
+      .findByPk(order_id)
+      .then((order) => {
+        if (!order) {
+          return res
+            .status(404)
+            .json({ success: false, message: "Order not found" });
+        }
+
+        order.update({
+          razorpayId: razorpay_payment_id,
+          razorpayOrderId: razorpay_order_id,
+          isPaid: true,
+          status: "accepted",
+          payment: "prepaid",
+        });
+
+        return res.json({ success: true, message: "Payment successful" });
+      })
+      .catch((error) => {
+        console.error(error);
+        res
+          .status(500)
+          .json({ success: false, message: "Internal Server Error" });
+      });
   } else {
     console.log("failed");
     res.status(400).json({ success: false, message: "Invalid signature" });

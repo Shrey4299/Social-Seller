@@ -23,11 +23,7 @@ exports.create = async (req, res) => {
 
     console.log(discount.discountPercentage);
 
-    if (discount) {
-      var finalPrize = -10;
-    } else {
-      var finalPrize = 0;
-    }
+    const finalPrize = discount ? -10 : 0;
 
     const address = await Address.findOne({
       where: {
@@ -41,7 +37,7 @@ exports.create = async (req, res) => {
       payment: payment,
       status: "new",
       address: address.id,
-      isPaid: "false",
+      isPaid: false,
     };
 
     const createdOrder = await Order.create(order);
@@ -54,102 +50,89 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.findAll = (req, res) => {
-  Order.findAll()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving orders.",
-      });
+exports.findAll = async (req, res) => {
+  try {
+    const data = await Order.findAll();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving orders.",
     });
+  }
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
+exports.findOne = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Order.findByPk(id);
 
-  Order.findByPk(id)
-    .then((data) => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Order with id=${id} was not found.`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving Order with id=" + id,
+    if (!data) {
+      return res.status(404).send({
+        message: `Order with id=${id} was not found.`,
       });
+    }
+
+    res.send(data);
+  } catch (err) {
+    res.status(500).send({
+      message: "Error retrieving Order with id=" + id,
     });
+  }
 };
 
-exports.update = (req, res) => {
-  const id = req.params.id;
+exports.update = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const num = await Order.update(req.body, { where: { id: id } });
 
-  Order.update(req.body, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Order was updated successfully.",
-        });
-      } else {
-        res.send({
-          message: `Cannot update Order with id=${id}. Maybe Order was not found or req.body is empty!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error updating Order with id=" + id,
+    if (num == 1) {
+      res.send({
+        message: "Order was updated successfully.",
       });
+    } else {
+      res.send({
+        message: `Cannot update Order with id=${id}. Maybe Order was not found or req.body is empty!`,
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Error updating Order with id=" + id,
     });
+  }
 };
 
-exports.delete = (req, res) => {
-  const id = req.params.id;
+exports.delete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const num = await Order.destroy({ where: { id: id } });
 
-  Order.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Order was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Order with id=${id}. Maybe Order was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete Order with id=" + id,
+    if (num == 1) {
+      res.send({
+        message: "Order was deleted successfully!",
       });
+    } else {
+      res.send({
+        message: `Cannot delete Order with id=${id}. Maybe Order was not found!`,
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Could not delete Order with id=" + id,
     });
+  }
 };
 
 exports.createVariantOrder = async (req, res) => {
-  const { quantity, VariantId } = req.body;
-
   try {
+    const { quantity, VariantId } = req.body;
+
     const variant = await db.variants.findOne({
-      where: {
-        id: VariantId,
-      },
+      where: { id: VariantId },
     });
 
     const UserId = req.user.id;
 
-    // Find all cart variants associated with the user
-    const order = await Order.findOne({
-      where: { UserId: UserId },
-    });
+    const order = await Order.findOne({ where: { UserId: UserId } });
 
     const orderVariant = await OrderVariant.create({
       quantity: quantity,
@@ -158,10 +141,8 @@ exports.createVariantOrder = async (req, res) => {
       VariantId: VariantId,
     });
 
-    // Add the price to the existing price in the associated Order
     const newPrice = order.price + quantity * variant.price;
 
-    // Update the price field in the associated Order
     await order.update({ price: newPrice });
 
     res.status(201).send(orderVariant);

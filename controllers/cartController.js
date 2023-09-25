@@ -18,7 +18,7 @@ exports.create = async (req, res) => {
       UserId,
     });
 
-    res.send(cart);
+    res.status(201).send(cart);
   } catch (error) {
     console.error(error);
     res.status(500).send({
@@ -79,7 +79,6 @@ exports.findOne = async (req, res) => {
     const UserId = req.params.userId;
 
     const cartVariants = await CartVariant.findAll({
-      // where: { CartId: { UserId: UserId } },
       include: [
         { model: db.carts, where: { UserId: UserId } },
         { model: db.variants },
@@ -107,7 +106,7 @@ exports.findOne = async (req, res) => {
       };
     });
 
-    res.send({
+    res.status(200).send({
       cartVariants: variantsWithTotalPrice,
       totalPrice: totalPrice,
     });
@@ -137,11 +136,11 @@ exports.emptyCart = async (req, res) => {
     });
 
     if (numDeleted > 0) {
-      res.send({
+      res.status(200).send({
         message: "Cart was emptied successfully!",
       });
     } else {
-      res.send({
+      res.status(404).send({
         message: `No cart items found for user with id=${UserId}.`,
       });
     }
