@@ -1,6 +1,7 @@
 const db = require("../models");
 const Product = db.products;
 const Variant = db.variants;
+const paginate = require("../utils/pagination");
 
 exports.create = async (req, res) => {
   try {
@@ -29,19 +30,16 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const pageSize = req.query.pageSize || 10;
-    const currentPage = req.query.page || 1;
+    const { page, pageSize } = req.query;
+    const { offset, limit } = paginate({ page, pageSize });
 
-    const products = await Product.findAll({
-      limit: pageSize,
-      offset: currentPage * pageSize,
-    });
+    const products = await Product.findAll({ offset, limit });
 
-    return res.send(products);
+    return res.status(200).send(products);
   } catch (error) {
     console.error(error);
-    return res.status(500).send({
-      message: "Some error occurred while retrieving products.",
+    return res.status(400).send({
+      message: error.message,
     });
   }
 };
@@ -62,7 +60,7 @@ exports.findProductByCategory = async (req, res) => {
     });
 
     if (!category) {
-      return res.status(404).send({
+      return res.status(204).send({
         message: `Category with ID ${category_id} not found.`,
       });
     }
@@ -73,7 +71,7 @@ exports.findProductByCategory = async (req, res) => {
       },
     });
 
-    return res.send(products);
+    return res.status(200).send(products);
   } catch (error) {
     console.error(error);
     return res.status(500).send({
@@ -94,9 +92,9 @@ exports.findOne = async (req, res) => {
     });
 
     if (data) {
-      return res.send(data);
+      return res.status(200).send(data);
     } else {
-      return res.status(404).send({
+      return res.status(204).send({
         message: `Product with id=${id} was not found.`,
       });
     }
@@ -117,11 +115,11 @@ exports.update = async (req, res) => {
     });
 
     if (num === 1) {
-      return res.send({
+      return res.status(201).send({
         message: "Product was updated successfully.",
       });
     } else {
-      return res.send({
+      return res.status(204).send({
         message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`,
       });
     }
@@ -142,11 +140,11 @@ exports.remove = async (req, res) => {
     });
 
     if (num === 1) {
-      return res.send({
+      return res.status(201).send({
         message: "Product was deleted successfully!",
       });
     } else {
-      return res.send({
+      return res.status(204).send({
         message: `Cannot delete Product with id=${id}. Maybe Product was not found!`,
       });
     }

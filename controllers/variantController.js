@@ -1,7 +1,6 @@
 const db = require("../models");
 const Variant = db.variants;
 
-// image Upload
 const multer = require("multer");
 const path = require("path");
 
@@ -14,7 +13,6 @@ exports.create = async (req, res) => {
     const ProductId = req.params.id;
     const image = req.file.path;
 
-    // Validate request
     if (!color || !size || !quantity || !price || !ProductId) {
       return res.status(400).send({
         message: "All fields are required!",
@@ -30,7 +28,7 @@ exports.create = async (req, res) => {
       image: image,
     });
 
-    res.send(variant);
+    res.status(201).send(variant);
   } catch (error) {
     console.log(error);
     res.status(500).send({

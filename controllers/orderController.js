@@ -53,7 +53,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   try {
     const data = await Order.findAll();
-    res.send(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: err.message || "Some error occurred while retrieving orders.",
@@ -72,7 +72,7 @@ exports.findOne = async (req, res) => {
       });
     }
 
-    res.send(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: "Error retrieving Order with id=" + id,
@@ -86,11 +86,11 @@ exports.update = async (req, res) => {
     const num = await Order.update(req.body, { where: { id: id } });
 
     if (num == 1) {
-      res.send({
+      res.status(201).send({
         message: "Order was updated successfully.",
       });
     } else {
-      res.send({
+      res.status(204).send({
         message: `Cannot update Order with id=${id}. Maybe Order was not found or req.body is empty!`,
       });
     }
@@ -107,11 +107,11 @@ exports.delete = async (req, res) => {
     const num = await Order.destroy({ where: { id: id } });
 
     if (num == 1) {
-      res.send({
+      res.status(202).send({
         message: "Order was deleted successfully!",
       });
     } else {
-      res.send({
+      res.status(204).send({
         message: `Cannot delete Order with id=${id}. Maybe Order was not found!`,
       });
     }

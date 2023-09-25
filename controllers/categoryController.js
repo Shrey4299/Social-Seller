@@ -28,7 +28,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   try {
     const categories = await Category.findAll();
-    return res.send(categories);
+    return res.status(200).send(categories);
   } catch (err) {
     console.log(err);
     return res.status(500).send({

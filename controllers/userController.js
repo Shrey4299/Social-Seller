@@ -37,7 +37,7 @@ exports.findAll = async (req, res) => {
         { model: db.roles, as: "Role" },
       ],
     });
-    return res.send(users);
+    return res.status(200).send(users);
   } catch (error) {
     return res.status(500).send({
       message: error.message || "Some error occurred while retrieving users.",
@@ -51,9 +51,9 @@ exports.findOne = async (req, res) => {
   try {
     const user = await User.findByPk(id);
     if (user) {
-      return res.send(user);
+      return res.status(200).send(user);
     } else {
-      return res.status(404).send({
+      return res.status(204).send({
         message: `User with id=${id} was not found.`,
       });
     }
@@ -73,11 +73,11 @@ exports.update = async (req, res) => {
     });
 
     if (num == 1) {
-      return res.send({
+      return res.status(201).send({
         message: "User was updated successfully.",
       });
     } else {
-      return res.send({
+      return res.status(204).send({
         message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
       });
     }
@@ -97,11 +97,11 @@ exports.delete = async (req, res) => {
     });
 
     if (num == 1) {
-      return res.send({
+      return res.status(202).send({
         message: "User was deleted successfully!",
       });
     } else {
-      return res.send({
+      return res.status(204).send({
         message: `Cannot delete User with id=${id}. Maybe User was not found!`,
       });
     }

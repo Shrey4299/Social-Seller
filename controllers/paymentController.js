@@ -86,7 +86,9 @@ const verifyPayment = (req, res) => {
           payment: "prepaid",
         });
 
-        return res.json({ success: true, message: "Payment successful" });
+        return res
+          .status(201)
+          .json({ success: true, message: "Payment successful" });
       })
       .catch((error) => {
         console.error(error);

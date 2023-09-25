@@ -140,7 +140,7 @@ exports.emptyCart = async (req, res) => {
         message: "Cart was emptied successfully!",
       });
     } else {
-      res.status(404).send({
+      res.status(204).send({
         message: `No cart items found for user with id=${UserId}.`,
       });
     }
