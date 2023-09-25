@@ -1,6 +1,5 @@
 const db = require("../models");
 const Product = db.products;
-const Variant = db.variants;
 const paginate = require("../utils/pagination");
 
 exports.create = async (req, res) => {

@@ -4,6 +4,7 @@ const routes = require("./routes");
 require("dotenv").config();
 const db = require("./models");
 const path = require("path");
+const globalNotFoundHandler = require("./middlewares/globalNotFoundHandler");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,9 +21,13 @@ db.sequelize
     console.log("Failed to sync db: " + err.message);
   });
 
+app.use("/uploads", express.static("./uploads"));
+
+// Define your routes
 app.use("/api", routes);
 
-app.use("/uploads", express.static("./uploads"));
+// Add globalNotFoundHandler as the last middleware
+app.use(globalNotFoundHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

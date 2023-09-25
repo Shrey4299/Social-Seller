@@ -1,109 +1,113 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("./controllers/userController");
-const productController = require("./controllers/productController");
-const orderController = require("./controllers/orderController");
-const addressController = require("./controllers/addressController");
-const roleController = require("./controllers/roleController");
+const usersController = require("./controllers/userController");
+const productsController = require("./controllers/productController");
+const ordersController = require("./controllers/orderController");
+const addressesController = require("./controllers/addressController");
+const rolesController = require("./controllers/roleController");
 const authController = require("./controllers/authController");
-const paymentController = require("./controllers/paymentController");
-const categoryController = require("./controllers/categoryController");
-const discountController = require("./controllers/discountController");
-const variantController = require("./controllers/variantController");
-const reviewController = require("./controllers/reviewController");
-const cartController = require("./controllers/cartController");
+const paymentsController = require("./controllers/paymentController");
+const categoriesController = require("./controllers/categoryController");
+const discountsController = require("./controllers/discountController");
+const variantsController = require("./controllers/variantController");
+const reviewsController = require("./controllers/reviewController");
+const cartsController = require("./controllers/cartController");
 const searchController = require("./controllers/searchController");
 const checkPaymentMiddleware = require("./middlewares/checkPayment");
 
 const authenticate = require("./middlewares/authMiddleware");
 
 // User Routes
-router.post("/user", userController.create);
-router.get("/user", userController.findAll);
-router.get("/user/:id", userController.findOne);
-router.put("/user/:id", authenticate("authenticated"), userController.update);
-router.delete("/user/:id", authenticate("admin"), userController.delete);
-router.post("/roles/user/:id", roleController.create);
+router.post("/users", usersController.create);
+router.get("/users", usersController.findAll);
+router.get("/users/:id", usersController.findOne);
+router.put("/users/:id", authenticate("authenticated"), usersController.update);
+router.delete("/users/:id", authenticate("admin"), usersController.delete);
+router.post("/users/:id/roles", rolesController.create);
 router.post("/login", authController.login);
-router.post("/address/user/:id", addressController.create);
+router.post("/users/:id/address", addressesController.create);
 
 // Product Routes
-router.get("/product", productController.findAll);
-router.get("/product/:id", productController.findOne);
+router.get("/products", productsController.findAll);
+router.get("/products/:id", productsController.findOne);
 router.post(
-  "/product/category/:id",
+  "/categories/:id/products",
   authenticate("authenticated"),
-  productController.create
+  productsController.create
 );
 router.put(
-  "/product/:id",
+  "/products/:id",
   authenticate("authenticated"),
-  productController.update
+  productsController.update
 );
-router.delete("/product/:id", authenticate("admin"), productController.remove);
-router.get(
-  "/products/category/:category_id",
-  productController.findProductByCategory
-);
-router.post(
-  "/reviews/product/:id",
-  authenticate("authenticated"),
-  reviewController.createReview
-);
-
-// categories
-router.get("/categories", categoryController.findAll);
-router.post(
-  "/category",
-  authenticate("authenticated"),
-  categoryController.create
-);
-
-// variants
-router.post(
-  "/variant/product/:id",
-  authenticate("authenticated"),
-  variantController.upload,
-  variantController.create
-);
-
-// cart
-router.post("/cart", authenticate("authenticated"), cartController.create);
-router.post(
-  "/addToCart/",
-  authenticate("authenticated"),
-  cartController.addToCart
-);
-router.get("/cartvariants/user/:userId", cartController.findOne);
 router.delete(
-  "/cartvariants/",
+  "/products/:id",
+  authenticate("admin"),
+  productsController.remove
+);
+router.get(
+  "/categories/:category_id/products",
+  productsController.findProductByCategory
+);
+router.post(
+  "/products/:id/reviews",
   authenticate("authenticated"),
-  cartController.emptyCart
+  reviewsController.createReview
+);
+
+// Categories
+router.get("/categories", categoriesController.findAll);
+router.post(
+  "/categories",
+  authenticate("authenticated"),
+  categoriesController.create
+);
+
+// Variants
+router.post(
+  "/products/:id/variants/",
+  authenticate("authenticated"),
+  variantsController.upload,
+  variantsController.create
+);
+
+// Cart
+router.post("/carts", authenticate("authenticated"), cartsController.create);
+router.post(
+  "/addToCarts",
+  authenticate("authenticated"),
+  cartsController.addToCart
+);
+router.get("/users/:userId/cartVariants", cartsController.findOne);
+router.delete(
+  "/cartVariants",
+  authenticate("authenticated"),
+  cartsController.emptyCart
 );
 
 // Order Routes
-router.get("/order", orderController.findAll);
-router.post("/order", authenticate("authenticated"), orderController.create);
+router.get("/orders", ordersController.findAll);
+router.post("/orders", authenticate("authenticated"), ordersController.create);
 router.post(
-  "/discount",
+  "/discounts",
   authenticate("authenticated"),
-  discountController.create
+  discountsController.create
 );
 
 router.post(
-  "/ordervariants",
+  "/orderVariants",
   authenticate("authenticated"),
-  orderController.createVariantOrder
+  ordersController.createVariantOrder
 );
 
 // Payment Routes
-router.get("/", paymentController.renderProductPage);
+router.get("/", paymentsController.renderProductPage);
 router.post(
   "/createOrder",
-  checkPaymentMiddleware,
-  paymentController.createOrder
+  // checkPaymentMiddleware,
+  paymentsController.createOrder
 );
-router.post("/verifyPayment", paymentController.verifyPayment);
+router.post("/verifyPayments", paymentsController.verifyPayment);
 
 router.get("/search", searchController.searchProducts);
 

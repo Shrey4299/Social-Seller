@@ -71,7 +71,7 @@ const verifyPayment = (req, res) => {
   if (generated_signature === razorpay_signature) {
     db.orders
       .findByPk(order_id)
-      .then((order) => {
+      .then(async (order) => {
         if (!order) {
           return res
             .status(404)
@@ -84,6 +84,22 @@ const verifyPayment = (req, res) => {
           isPaid: true,
           status: "accepted",
           payment: "prepaid",
+        });
+
+        const orderVariant = await db.ordervariants({
+          where: {
+            order_id: order_id,
+          },
+        });
+
+        console.log(orderVariant.VariantId);
+
+        const variant = orderVariant.VariantId;
+
+        let variantQuantity = variant.quantity;
+
+        variant.update({
+          quantity: variantQuantity - 1,
         });
 
         return res
