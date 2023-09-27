@@ -9,6 +9,10 @@ exports.create = async (req, res) => {
     const { payment, couponCode } = req.body;
     const UserId = req.user.id;
 
+    console.log(payment);
+    console.log(couponCode);
+    console.log(UserId);
+
     if (!UserId || !payment) {
       return res.status(400).send({
         message: "user and payment method are required fields!",
@@ -21,7 +25,7 @@ exports.create = async (req, res) => {
       },
     });
 
-    console.log(discount.discountPercentage);
+    console.log(discount.discountPercentage + "this is disc per");
 
     const finalPrize = discount ? -10 : 0;
 
@@ -41,6 +45,8 @@ exports.create = async (req, res) => {
     };
 
     const createdOrder = await Order.create(order);
+
+    console.log(createdOrder);
 
     res.status(201).send(createdOrder);
   } catch (err) {
@@ -124,28 +130,47 @@ exports.delete = async (req, res) => {
 
 exports.createVariantOrder = async (req, res) => {
   try {
-    const { quantity, VariantId } = req.body;
+    const { quantity, VariantId, OrderId } = req.body;
 
+    // Find the variant
     const variant = await db.variants.findOne({
       where: { id: VariantId },
     });
 
-    const UserId = req.user.id;
+    // Find the order
+    const order = await Order.findOne({ where: { id: OrderId } });
 
-    const order = await Order.findOne({ where: { UserId: UserId } });
-
-    const orderVariant = await OrderVariant.create({
-      quantity: quantity,
-      price: variant.price,
-      OrderId: order.id,
-      VariantId: VariantId,
+    // Check if the variant is already in the order
+    const existingOrderVariant = await OrderVariant.findOne({
+      where: {
+        VariantId: VariantId,
+        OrderId: OrderId,
+      },
     });
 
+    if (existingOrderVariant) {
+      // If the variant is already in the order, update its quantity
+      const newQuantity = existingOrderVariant.quantity + quantity;
+      await existingOrderVariant.update({ quantity: newQuantity });
+    } else {
+      // If the variant is not in the order, create a new order variant
+      const orderVariant = await OrderVariant.create({
+        quantity: quantity,
+        price: variant.price,
+        OrderId: OrderId,
+        VariantId: VariantId,
+      });
+    }
+
+    // Calculate the new price
     const newPrice = order.price + quantity * variant.price;
 
+    // Update the order with the new price
     await order.update({ price: newPrice });
 
-    res.status(201).send(orderVariant);
+    res
+      .status(201)
+      .send({ message: "Order Variant created/updated successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).send({

@@ -4,13 +4,6 @@ const User = db.users;
 // Create a new user
 exports.create = async (req, res) => {
   try {
-    // Validate request
-    if (!req.body.name || !req.body.email || !req.body.password) {
-      return res.status(400).send({
-        message: "Name, email, and password are required fields!",
-      });
-    }
-
     const user = {
       name: req.body.name,
       email: req.body.email,

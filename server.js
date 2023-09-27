@@ -5,8 +5,10 @@ require("dotenv").config();
 const db = require("./models");
 const path = require("path");
 const globalNotFoundHandler = require("./middlewares/globalNotFoundHandler");
+const bodyParser = require("body-parser");
 
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

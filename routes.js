@@ -14,11 +14,14 @@ const reviewsController = require("./controllers/reviewController");
 const cartsController = require("./controllers/cartController");
 const searchController = require("./controllers/searchController");
 const checkPaymentMiddleware = require("./middlewares/checkPayment");
+const checkVariantQuantity = require("./middlewares/checkVariantQuantity ");
+const validateUserCreate = require("./middlewares/validateUserCreate");
+const checkVariantMiddleware = require("./middlewares/checkVariantMiddleware");
 
 const authenticate = require("./middlewares/authMiddleware");
 
 // User Routes
-router.post("/users", usersController.create);
+router.post("/users", validateUserCreate, usersController.create);
 router.get("/users", usersController.findAll);
 router.get("/users/:id", usersController.findOne);
 router.put("/users/:id", authenticate("authenticated"), usersController.update);
@@ -67,6 +70,7 @@ router.post(
 router.post(
   "/products/:id/variants/",
   authenticate("authenticated"),
+  checkVariantMiddleware,
   variantsController.upload,
   variantsController.create
 );
@@ -97,6 +101,7 @@ router.post(
 router.post(
   "/orderVariants",
   authenticate("authenticated"),
+  checkVariantQuantity,
   ordersController.createVariantOrder
 );
 
@@ -104,10 +109,11 @@ router.post(
 router.get("/", paymentsController.renderProductPage);
 router.post(
   "/createOrder",
-  // checkPaymentMiddleware,
+  checkPaymentMiddleware,
   paymentsController.createOrder
 );
-router.post("/verifyPayments", paymentsController.verifyPayment);
+router.post("/verifyPayment", paymentsController.verifyPayment);
+router.post("/verification", paymentsController.verifyPaymentWebhook);
 
 router.get("/search", searchController.searchProducts);
 

@@ -31,8 +31,14 @@ exports.findAll = async (req, res) => {
   try {
     const { page, pageSize } = req.query;
     const { offset, limit } = paginate({ page, pageSize });
-
-    const products = await Product.findAll({ offset, limit });
+    const products = await Product.findAll({
+      offset,
+      limit,
+      include: [
+        { model: db.variants, as: "Variant" },
+        { model: db.reviews, as: "Reviews" },
+      ],
+    });
 
     return res.status(200).send(products);
   } catch (error) {
