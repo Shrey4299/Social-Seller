@@ -17,6 +17,7 @@ const checkPaymentMiddleware = require("./middlewares/checkPayment");
 const checkVariantQuantity = require("./middlewares/checkVariantQuantity ");
 const validateUserCreate = require("./middlewares/validateUserCreate");
 const checkVariantMiddleware = require("./middlewares/checkVariantMiddleware");
+const checkPaymentLog = require("./middlewares/checkPaymentLog");
 
 const authenticate = require("./middlewares/authMiddleware");
 
@@ -113,7 +114,11 @@ router.post(
   paymentsController.createOrder
 );
 router.post("/verifyPayment", paymentsController.verifyPayment);
-router.post("/verification", paymentsController.verifyPaymentWebhook);
+router.post(
+  "/verification",
+  checkPaymentLog,
+  paymentsController.verifyPaymentWebhook
+);
 
 router.get("/search", searchController.searchProducts);
 

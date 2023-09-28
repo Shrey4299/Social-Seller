@@ -10,7 +10,7 @@ const checkVariantQuantity = async (req, res, next) => {
 
     console.log(variant.quantity);
 
-    if (!variant || variant.quantity <= 0) {
+    if (!variant || variant.quantity < quantity) {
       return res.status(400).send({
         message: "Variant quantity is insufficient.",
       });

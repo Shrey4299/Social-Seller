@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 require("dotenv").config();
 const db = require("../models");
+const PaymentLog = db.paymentlogs;
 const crypto = require("crypto");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
@@ -15,8 +16,8 @@ const razorpayInstance = new Razorpay({
 const renderProductPage = async (req, res) => {
   try {
     const orders = await db.orders.findAll(); // Assuming your model is named 'Order'
-    const orderVariants = await db.ordervariants.findAll(); // Assuming your model is named 'Order'
-    res.render("product", { orders });
+    const orderVariants = await db.ordervariants.findAll(); // Assuming your model is named 'OrderVariant'
+    res.render("product", { orders, orderVariants });
   } catch (error) {
     console.log(error.message);
   }
@@ -138,7 +139,7 @@ const verifyPayment = async (req, res) => {
 const verifyPaymentWebhook = async (req, res) => {
   try {
     const secret = "1234";
-    console.log("from web hioika");
+    console.log("from webhooks");
     console.log(JSON.stringify(req.body));
     const crypto = require("crypto");
 
@@ -150,12 +151,35 @@ const verifyPaymentWebhook = async (req, res) => {
 
     if (digest === req.headers["x-razorpay-signature"]) {
       console.log("Request is legitimate.");
-      // Process the request data
-      const fs = require("fs");
-      fs.writeFileSync("payment1.json", JSON.stringify(req.body, null, 4));
+
+      const paymentData = req.body.payload.payment.entity;
+
+      const paymentLog = await PaymentLog.create({
+        account_id: req.body.account_id,
+        id: paymentData.id,
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+        status: paymentData.status,
+        order_id: paymentData.order_id,
+        method: paymentData.method,
+        card: paymentData.card,
+        description: paymentData.description,
+        card_id: paymentData.card_id,
+        bank: paymentData.bank,
+        wallet: paymentData.wallet,
+        vpa: paymentData.vpa,
+        email: paymentData.email,
+        contact: paymentData.contact,
+        error_code: paymentData.error_code,
+        error_description: paymentData.error_description,
+        acquirer_data: paymentData.acquirer_data,
+        upi: paymentData.upi,
+        base_amount: paymentData.base_amount || paymentData.amount,
+      });
+
+      console.log("Payment Log Created:", paymentLog);
     } else {
       console.log("Invalid signature. Passing request.");
-      // Do nothing or handle as needed
     }
 
     res.json({ status: "ok" });

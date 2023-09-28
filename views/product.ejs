@@ -17,11 +17,22 @@
         <strong>Amount:</strong> Rs. <%= order.price %><br />
         <strong>Address:</strong> <%= order.address %><br />
         <strong>Description:</strong> <%= order.slug %><br />
+        <strong>Order Variants:</strong><br />
+        <ul>
+          <% orderVariants.forEach(orderVariant => { %> <% if
+          (orderVariant.OrderId === order.id) { %>
+          <li>
+            Variant ID: <%= orderVariant.VariantId %><br />
+            Quantity: <%= orderVariant.quantity %><br />
+            Price: <%= orderVariant.price %><br />
+          </li>
+          <% } %> <% }); %>
+        </ul>
         <form class="pay-form">
-          <input type="hidden" name="name" value="Shirt" />
+          <input type="hidden" name="name" value="Product" />
           <input type="hidden" name="amount" value="<%= order.price %>" />
           <input type="hidden" name="mainId" value="<%= order.id %>" />
-          <input type="hidden" name="description" value="Shirt Buying" />
+          <input type="hidden" name="description" value="Product Desc" />
           <input type="submit" value="Pay Now" />
         </form>
       </li>
@@ -40,13 +51,12 @@
 
       var formData = $(this).serialize();
 
+      console.log("this is form data" + formData);
+
       axios
         .post("/api/createOrder", formData)
         .then(function (response) {
           var res = response.data;
-
-          console.log(res + " this is res data ");
-          console.log(response.data + " this is response  data ");
 
           if (res.success) {
             var options = {

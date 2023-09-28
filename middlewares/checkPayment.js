@@ -2,10 +2,10 @@ const db = require("../models");
 
 const checkPayment = async (req, res, next) => {
   try {
-    const order_id = req.body.order_id; // Assuming order_id is available in the request body
+    const order_id = req.body.mainId; // Assuming order_id is available in the request body
 
     console.log(req.body);
-    // Find the order
+
     const order = await db.orders.findByPk(order_id);
 
     if (!order) {
