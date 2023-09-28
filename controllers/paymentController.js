@@ -61,6 +61,8 @@ const createOrder = async (req, res) => {
 };
 
 const verifyPayment = async (req, res) => {
+  const t = await db.sequelize.transaction();
+
   try {
     console.log("Inside Verify Payment");
     const {
@@ -83,7 +85,7 @@ const verifyPayment = async (req, res) => {
         .json({ success: false, message: "Invalid signature" });
     }
 
-    const order = await db.orders.findByPk(order_id);
+    const order = await db.orders.findByPk(order_id, { transaction: t });
 
     if (!order) {
       return res
@@ -91,19 +93,25 @@ const verifyPayment = async (req, res) => {
         .json({ success: false, message: "Order not found" });
     }
 
-    await order.update({
-      razorpayId: razorpay_payment_id,
-      razorpayOrderId: razorpay_order_id,
-      isPaid: true,
-      status: "accepted",
-      payment: "prepaid",
-    });
-
-    const orderVariants = await db.ordervariants.findAll({
-      where: {
-        OrderId: order_id,
+    await order.update(
+      {
+        razorpayId: razorpay_payment_id,
+        razorpayOrderId: razorpay_order_id,
+        isPaid: true,
+        status: "accepted",
+        payment: "prepaid",
       },
-    });
+      { transaction: t }
+    );
+
+    const orderVariants = await db.ordervariants.findAll(
+      {
+        where: {
+          OrderId: order_id,
+        },
+      },
+      { transaction: t }
+    );
 
     console.log(orderVariants);
 
@@ -112,9 +120,12 @@ const verifyPayment = async (req, res) => {
         `Variant ID: ${orderVariant.VariantId}, Quantity: ${orderVariant.quantity}`
       );
 
-      const variant = await db.variants.findByPk(orderVariant.VariantId);
+      const variant = await db.variants.findByPk(orderVariant.VariantId, {
+        transaction: t,
+      });
 
       if (!variant) {
+        await t.rollback();
         return res
           .status(404)
           .json({ success: false, message: "Variant not found" });
@@ -122,16 +133,22 @@ const verifyPayment = async (req, res) => {
 
       let variantQuantity = variant.quantity;
 
-      await variant.update({
-        quantity: variantQuantity - orderVariant.quantity,
-      });
+      await variant.update(
+        {
+          quantity: variantQuantity - orderVariant.quantity,
+        },
+        { transaction: t }
+      );
     }
+
+    await t.commit();
 
     return res
       .status(201)
       .json({ success: true, message: "Payment successful" });
   } catch (error) {
     console.error(error);
+    await t.rollback();
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
