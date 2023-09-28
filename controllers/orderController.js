@@ -27,7 +27,7 @@ exports.create = async (req, res) => {
 
     console.log(discount.discountPercentage + "this is disc per");
 
-    const finalPrize = discount ? -10 : 0;
+    const finalPrize = discount ? -discount.discountPercentage : 0;
 
     const address = await Address.findOne({
       where: {

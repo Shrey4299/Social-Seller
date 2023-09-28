@@ -99,31 +99,33 @@ const verifyPayment = async (req, res) => {
       payment: "prepaid",
     });
 
-    const orderVariant = await db.ordervariants.findOne({
+    const orderVariants = await db.ordervariants.findAll({
       where: {
         OrderId: order_id,
       },
     });
 
-    if (!orderVariant) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Order variant not found" });
+    console.log(orderVariants);
+
+    for (const orderVariant of orderVariants) {
+      console.log(
+        `Variant ID: ${orderVariant.VariantId}, Quantity: ${orderVariant.quantity}`
+      );
+
+      const variant = await db.variants.findByPk(orderVariant.VariantId);
+
+      if (!variant) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Variant not found" });
+      }
+
+      let variantQuantity = variant.quantity;
+
+      await variant.update({
+        quantity: variantQuantity - orderVariant.quantity,
+      });
     }
-
-    const variant = await db.variants.findByPk(orderVariant.VariantId);
-
-    if (!variant) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Variant not found" });
-    }
-
-    let variantQuantity = variant.quantity;
-
-    await variant.update({
-      quantity: variantQuantity - 1,
-    });
 
     return res
       .status(201)
