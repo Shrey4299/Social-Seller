@@ -108,9 +108,11 @@ router.post(
 
 // Payment Routes
 router.get("/", paymentsController.renderProductPage);
+router.get("/phonepe", paymentsController.renderPhonepePage);
+router.get("/phonepeSuccess", paymentsController.renderPhonepeSuccess);
 router.post(
   "/createOrder",
-  checkPaymentMiddleware,
+  // checkPaymentMiddleware,
   paymentsController.createOrder
 );
 router.post("/verifyPayment", paymentsController.verifyPayment);
@@ -119,6 +121,11 @@ router.post(
   checkPaymentLog,
   paymentsController.verifyPaymentWebhook
 );
+router.post("/phonepePayment", paymentsController.makePhonepePayment);
+router.get("/phonepePaymentfailed", (req, res) => {
+  const error = JSON.stringify(req.query.cURLError);
+  res.send(`Payment Failed. Error: ${error}`);
+});
 
 router.get("/search", searchController.searchProducts);
 

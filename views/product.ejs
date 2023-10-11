@@ -9,36 +9,31 @@
 
   <body>
     <hr />
-    <h1>List of Unpaid Orders</h1>
-    <ul>
-      <% orders.forEach(order => { %> <% if (!order.isPaid) { %>
-      <li>
-        <strong>Order ID:</strong> <%= order.id %><br />
-        <strong>Amount:</strong> Rs. <%= order.price %><br />
-        <strong>Address:</strong> <%= order.address %><br />
-        <strong>Description:</strong> <%= order.slug %><br />
-        <strong>Order Variants:</strong><br />
-        <ul>
-          <% orderVariants.forEach(orderVariant => { %> <% if
-          (orderVariant.OrderId === order.id) { %>
-          <li>
-            Variant ID: <%= orderVariant.VariantId %><br />
-            Quantity: <%= orderVariant.quantity %><br />
-            Price: <%= orderVariant.price %><br />
-          </li>
-          <% } %> <% }); %>
-        </ul>
-        <form class="pay-form">
-          <input type="hidden" name="name" value="Product" />
-          <input type="hidden" name="amount" value="<%= order.price %>" />
-          <input type="hidden" name="mainId" value="<%= order.id %>" />
-          <input type="hidden" name="description" value="Product Desc" />
-          <input type="submit" value="Pay Now" />
-        </form>
-      </li>
-      <% } %> <% }); %>
-    </ul>
-    <div style="display: inline-block"></div>
+    <h1>Make a Payment</h1>
+    <form class="pay-form">
+      <label for="userId">User ID:</label>
+      <input type="text" id="UserId" name="UserId" required /><br />
+
+      <label for="payment">Payment Method:</label>
+      <input type="text" id="payment" name="payment" required /><br />
+
+      <label for="couponCode">Coupon Code:</label>
+      <input type="text" id="couponCode" name="couponCode" required /><br />
+
+      <label for="variantId">Variant ID:</label>
+      <input type="text" id="VariantId" name="VariantId" required /><br />
+
+      <label for="quantity">Quantity:</label>
+      <input
+        type="number"
+        id="quantity"
+        name="quantity"
+        min="1"
+        required
+      /><br />
+
+      <input type="submit" value="Pay Now" />
+    </form>
   </body>
 </html>
 

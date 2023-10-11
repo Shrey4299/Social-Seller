@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ab78c1f-4198-4de3-a787-1ef0d5f80020" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Images/1695283878824.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695283878824.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Images/1695300028240.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695300028240.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Images/1695300204087.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695300204087.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Images/1695455463225.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695455463225.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Images/1695455554539.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/Uploads/1695455554539.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/paymentController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/paymentController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/paymentController2.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/product.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/product.ejs" afterDir="false" />
     </list>
@@ -35,7 +30,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "D:/desktop/web devlopment/node js/social seller assignment"
   }
 }]]></component>
