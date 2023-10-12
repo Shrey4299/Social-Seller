@@ -21,112 +21,10 @@ const renderProductPage = async (req, res) => {
   }
 };
 
-const renderPhonepePage = async (req, res) => {
-  try {
-    res.render("phonepe");
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
-const renderPhonepeSuccess = async (req, res) => {
-  try {
-    const responseData = {
-      success: true,
-      code: "PAYMENT_INITIATED",
-      message: "Payment initiated",
-      data: {
-        merchantId: "PGTESTPAYUAT",
-        merchantTransactionId: "MT785058104",
-        instrumentResponse: { type: "PAY_PAGE", redirectInfo: {} },
-      },
-    };
 
-    res.render("phonepeSuccess", {
-      code: responseData.code,
-      transactionId: responseData.data.merchantTransactionId,
-      providerReferenceId: responseData.data.merchantId,
-      data: responseData.data,
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
-const makePhonepePayment = async (req, res) => {
-  try {
-    console.log("entered make phonepe payment");
-    const amount = req.body.amountEnterByUsers;
 
-    const merchantId = "PGTESTPAYUAT";
-    const saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
-
-    const data = {
-      merchantId: merchantId,
-      merchantTransactionId: "MT785058104",
-      merchantUserId: "MUID123",
-      amount: amount * 100,
-      redirectUrl: "http://localhost:8080/api/phonepeSuccess/",
-      redirectMode: "POST",
-      callbackUrl: "http://localhost:8080/api/phonepeSuccess/",
-      mobileNumber: "9825454588",
-      paymentInstrument: {
-        type: "PAY_PAGE",
-      },
-    };
-
-    const payloadMain = Buffer.from(JSON.stringify(data)).toString("base64");
-    const payload = `${payloadMain}/pg/v1/pay${saltKey}`;
-    const Checksum =
-      require("crypto").createHash("sha256").update(payload).digest("hex") +
-      "###1";
-
-    console.log(Checksum);
-    const response = await axios.post(
-      "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay",
-      {
-        request: payloadMain,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-VERIFY": Checksum,
-          accept: "application/json",
-        },
-      }
-    );
-
-    const responseData = response.data;
-    console.log(responseData);
-    const url = responseData.data.instrumentResponse.redirectInfo.url;
-
-    // status callback
-    const options = {
-      method: "GET",
-      url: `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${merchantId}/MT785058104`,
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-
-    // status callback
-
-    res.redirect(url);
-  } catch (error) {
-    const errMessage = error.response ? error.response.data : error.message;
-    res.redirect(`/api/phonepePaymentfailed?cURLError=${errMessage}`);
-  }
-};
 
 let t;
 console.log(t);
@@ -381,10 +279,8 @@ const verifyPayment = async (req, res) => {
 
 module.exports = {
   renderProductPage,
-  renderPhonepePage,
-  renderPhonepeSuccess,
   createOrder,
   verifyPayment,
   verifyPaymentWebhook,
-  makePhonepePayment,
+
 };

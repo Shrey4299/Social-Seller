@@ -4,6 +4,8 @@ module.exports = {
   PASSWORD: "Sonu619@",
   DB: "Ecommerce",
   dialect: "postgres",
+  logging: false,
+
   pool: {
     max: 5,
     min: 0,

@@ -7,6 +7,7 @@ const addressesController = require("./controllers/addressController");
 const rolesController = require("./controllers/roleController");
 const authController = require("./controllers/authController");
 const paymentsController = require("./controllers/paymentController");
+const phonepePayment = require("./controllers/phonepeController");
 const categoriesController = require("./controllers/categoryController");
 const discountsController = require("./controllers/discountController");
 const variantsController = require("./controllers/variantController");
@@ -108,8 +109,6 @@ router.post(
 
 // Payment Routes
 router.get("/", paymentsController.renderProductPage);
-router.get("/phonepe", paymentsController.renderPhonepePage);
-router.get("/phonepeSuccess", paymentsController.renderPhonepeSuccess);
 router.post(
   "/createOrder",
   // checkPaymentMiddleware,
@@ -121,11 +120,16 @@ router.post(
   checkPaymentLog,
   paymentsController.verifyPaymentWebhook
 );
-router.post("/phonepePayment", paymentsController.makePhonepePayment);
+
+// phonepe routes
+router.post("/phonepePayment", phonepePayment.makePhonepePayment);
 router.get("/phonepePaymentfailed", (req, res) => {
   const error = JSON.stringify(req.query.cURLError);
   res.send(`Payment Failed. Error: ${error}`);
 });
+router.get("/phonepe", phonepePayment.renderPhonepePage);
+router.get("/phonepeSuccess", phonepePayment.renderPhonepeSuccess);
+router.post("/phonepeVerify", phonepePayment.verifyPhonepePayment);
 
 router.get("/search", searchController.searchProducts);
 
