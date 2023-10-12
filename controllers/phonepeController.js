@@ -1,4 +1,5 @@
 const db = require("../models");
+const phonepepaymentlog = db.phonepepaymentlogs;
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 require("dotenv").config();
@@ -84,8 +85,6 @@ const verifyPhonepePayment = async (req, res) => {
       merchantTransactionId,
       transactionId,
       amount,
-      state,
-      responseCode,
       paymentInstrument,
     } = decodedBody.data;
 
@@ -123,6 +122,24 @@ const verifyPhonepePayment = async (req, res) => {
     const responseData = verifyResponse.data;
     console.log(responseData);
 
+    await phonepepaymentlog.create({
+      merchantId: responseData.data.merchantId,
+      merchantTransactionId: responseData.data.merchantTransactionId,
+      transactionId: responseData.data.transactionId,
+      amount: responseData.data.amount,
+      state: responseData.data.state,
+      responseCode: responseData.data.responseCode,
+      paymentInstrumentType: responseData.data.paymentInstrument.type,
+      cardType: responseData.data.paymentInstrument.cardType,
+      pgTransactionId: responseData.data.paymentInstrument.pgTransactionId,
+      bankTransactionId: responseData.data.paymentInstrument.bankTransactionId,
+      pgAuthorizationCode:
+        responseData.data.paymentInstrument.pgAuthorizationCode,
+      arn: responseData.data.paymentInstrument.arn,
+      bankId: responseData.data.paymentInstrument.bankId,
+      brn: responseData.data.paymentInstrument.brn,
+    });
+
     // Further verification logic based on verifyResponse goes here...
   } catch (error) {
     const errMessage = error.response ? error.response.data : error.message;
@@ -132,6 +149,8 @@ const verifyPhonepePayment = async (req, res) => {
 
 const renderPhonepeSuccess = async (req, res) => {
   try {
+    console.log("rendering phonepe Success");
+    console.log(req.body);
     const responseData = {
       success: true,
       code: "PAYMENT_INITIATED",

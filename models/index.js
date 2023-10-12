@@ -34,6 +34,7 @@ db.carts = require("./Cart")(sequelize, Sequelize);
 db.cartvariants = require("./CartVariant")(sequelize, Sequelize);
 db.ordervariants = require("./orderVariant")(sequelize, Sequelize);
 db.paymentlogs = require("./PaymentLog")(sequelize, Sequelize);
+db.phonepepaymentlogs = require("./PhonepeyPaymentLog")(sequelize, Sequelize);
 
 db.users.hasMany(db.tutorials, { as: "Tutorial" });
 db.tutorials.belongsTo(db.users);
