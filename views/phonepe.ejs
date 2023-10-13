@@ -36,12 +36,14 @@
         margin-bottom: 5px;
       }
 
+      input[type="text"],
       input[type="number"] {
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
         padding: 8px;
         width: calc(100% - 18px);
+        margin-bottom: 10px;
       }
 
       input[type="submit"] {
@@ -62,21 +64,34 @@
       }
     </style>
   </head>
+
   <body>
     <div class="container">
       <hr />
       <h1>Make a Payment</h1>
       <form class="pay-form" method="post" action="/api/phonepePayment">
-        <!-- Only one input field for amount -->
-        <label for="amountEnterByUsers">Amount:</label>
+        <label for="UserId">User ID:</label>
+        <input type="text" id="UserId" name="UserId" required />
+
+        <label for="payment">Payment Method:</label>
+        <input type="text" id="payment" name="payment" required />
+
+        <label for="couponCode">Coupon Code:</label>
+        <input type="text" id="couponCode" name="couponCode" required />
+
+        <label for="VariantId">Variant ID:</label>
+        <input type="text" id="VariantId" name="VariantId" required />
+
+        <label for="quantity">Quantity:</label>
         <input
           type="number"
-          id="amountEnterByUsers"
-          name="amountEnterByUsers"
+          id="quantity"
+          name="quantity"
           min="1"
           required
         /><br />
-        <input type="submit" name="submit_form" value="Pay Now" />
+
+        <input type="submit" value="Pay Now" />
       </form>
     </div>
   </body>

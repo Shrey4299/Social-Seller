@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Payment Method Selection</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      .payment-method {
+        margin: 10px 0;
+        font-size: 18px;
+      }
+
+      .payment-method input {
+        margin-right: 10px;
+      }
+
+      .payment-method label {
+        cursor: pointer;
+      }
+
+      button[type="submit"] {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Choose Payment Method</h1>
+
+      <form id="paymentForm">
+        <div class="payment-method">
+          <input
+            type="radio"
+            id="razorpay"
+            name="paymentMethod"
+            value="razorpay"
+            required
+          />
+          <label for="razorpay">Razorpay</label>
+        </div>
+
+        <div class="payment-method">
+          <input
+            type="radio"
+            id="phonepe"
+            name="paymentMethod"
+            value="phonepe"
+            required
+          />
+          <label for="phonepe">PhonePe</label>
+        </div>
+
+        <button type="submit">Proceed</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("paymentForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          var selectedMethod = document.querySelector(
+            'input[name="paymentMethod"]:checked'
+          ).value;
+
+          if (selectedMethod === "razorpay") {
+            window.location.href = "http://localhost:8080/api/razorpay";
+          } else if (selectedMethod === "phonepe") {
+            window.location.href = "http://localhost:8080/api/phonepe";
+          }
+        });
+    </script>
+  </body>
+</html>
