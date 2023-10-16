@@ -1,8 +1,10 @@
-const db = require("../models");
+const db = require("../../../services");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 require("dotenv").config();
 const axios = require("axios");
+const fs = require("fs");
+const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -191,6 +193,14 @@ const verifyPaymentWebhook = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
   try {
+    const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+
+    // Send order confirmation email
+    await sendOrderConfirmationEmail(
+      "shreyanshdewangan4299@gmail.com",
+      htmlContent
+    );
+
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -264,6 +274,14 @@ const verifyPayment = async (req, res) => {
       );
     }
 
+    // const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+
+    // // Send order confirmation email
+    // await sendOrderConfirmationEmail(
+    //   "shreyanshdewangan4299@gmail.com",
+    //   htmlContent
+    // );
+
     await t.commit();
     t = undefined;
 
@@ -271,6 +289,13 @@ const verifyPayment = async (req, res) => {
       .status(201)
       .json({ success: true, message: "Payment successful" });
   } catch (error) {
+    const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+
+    // Send order confirmation email
+    await sendOrderConfirmationEmail(
+      "shreyanshdewangan4299@gmail.com",
+      htmlContent
+    );
     console.error(error);
     await t.rollback();
     t = undefined;

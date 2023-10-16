@@ -5,79 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ab78c1f-4198-4de3-a787-1ef0d5f80020" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695283878824.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695300028240.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695300204087.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695455463225.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695455554539.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695622353691.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695644779341.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695715245122.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695720974211.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695721972846.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/1695721979887.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/cart/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/category/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/order/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/paymentLog/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/phonepePaymentLog/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/product/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/role/routes/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/variant/routes/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695283878824.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695300028240.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695300204087.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695455463225.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695455554539.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695622353691.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695644779341.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695715245122.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695720974211.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695721972846.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uploads/1695721979887.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/addressController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/address/controllers/addressController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/cartController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/cart/controllers/cartController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/categoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/category/controllers/categoryController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/discountController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/discount/controllers/discountController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/orderController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/order/controllers/orderController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/paymentController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/controllers/paymentController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/phonepeController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/phonepePaymentLog/controllers/phonepeController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/productController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/product/controllers/productController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/reviewController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/review/controllers/reviewController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/roleController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/role/controllers/roleController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/searchController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/searchController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/userController.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/variantController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/controllers/variantController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/authMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/middlewares/authMiddleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/checkPayment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/checkPaymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPaymentLog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/checkVariantMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantMiddleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/checkVariantQuantity .js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantQuantity .js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/globalNotFoundHandler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/middlewares/globalNotFoundHandler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/validateUserCreate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/user/middlewares/validateUserCreate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Address.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/address/models/Address.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/cart/models/Cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/CartVariant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/cart/models/CartVariant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/category/models/Category.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Discount.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/discount/models/Discount.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/order/models/Order.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/OrderVariant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/order/models/OrderVariant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/PaymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/models/PaymentLog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/PhonepeyPaymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/phonepePaymentLog/models/PhonepeyPaymentLog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Product.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/product/models/Product.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Review.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/review/models/Review.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Role.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/role/models/Role.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Tutorial.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/user/models/User.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Variant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/models/Variant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/address/routes/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/firebase.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/firebase.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/authService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/authService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/phonepe.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/phonepe.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/product.ejs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/cart/routes/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/cart/routes/cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/discount/controllers/discount.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/discount/controllers/discount.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/order/routes/order.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/order/routes/order.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/controllers/paymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/controllers/paymentLog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPaymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPaymentLog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/routes/paymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/routes/paymentLog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/variant/controllers/variant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/controllers/variant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantMiddleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantQuantity .js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantQuantity .js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/variant/routes/variant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/routes/variant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

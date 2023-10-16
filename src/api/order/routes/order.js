@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const ordersController = require("../controllers/order");
+const discountsController = require("../../discount/controllers/discount");
+const checkVariantQuantity = require("../../variant/middlewares/checkVariantQuantity ");
 
 const authenticate = require("../../../middlewares/authMiddleware");
 
@@ -20,5 +22,6 @@ router.post(
   checkVariantQuantity,
   ordersController.createVariantOrder
 );
+
 
 module.exports = router;

@@ -30,19 +30,25 @@ db.categories = require("../api/category/models/category")(
   sequelize,
   Sequelize
 );
-// db.discounts = require("./Discount")(sequelize, Sequelize);
+db.discounts = require("../api/discount/models/discount")(sequelize, Sequelize);
 db.orders = require("../api/order/models/order")(sequelize, Sequelize);
 db.ordervariants = require("../api/order/models/orderVariant")(
   sequelize,
   Sequelize
 );
-// db.carts = require("./Cart")(sequelize, Sequelize);
-// db.cartvariants = require("./CartVariant")(sequelize, Sequelize);
-// db.paymentlogs = require("./PaymentLog")(sequelize, Sequelize);
-// db.phonepepaymentlogs = require("./PhonepeyPaymentLog")(sequelize, Sequelize);
-
-// db.users.hasMany(db.tutorials, { as: "Tutorial" });
-// db.tutorials.belongsTo(db.users);
+db.carts = require("../api/cart/models/cart")(sequelize, Sequelize);
+db.cartvariants = require("../api/cart/models/cartVariant")(
+  sequelize,
+  Sequelize
+);
+db.paymentlogs = require("../api/paymentLog/models/paymentLog")(
+  sequelize,
+  Sequelize
+);
+db.phonepepaymentlogs = require("../api/phonepePaymentLog/models/phonepeLog")(
+  sequelize,
+  Sequelize
+);
 
 db.users.hasMany(db.roles, { as: "Role" });
 db.roles.belongsTo(db.users);
@@ -62,21 +68,21 @@ db.reviews.belongsTo(db.users);
 db.products.hasMany(db.reviews);
 db.reviews.belongsTo(db.products);
 
-// // Associations
-// db.users.hasOne(db.carts);
-// db.carts.belongsTo(db.users);
+// Associations
+db.users.hasOne(db.carts);
+db.carts.belongsTo(db.users);
 
-// db.carts.belongsToMany(db.variants, { through: "CartVariants" });
-// db.variants.belongsToMany(db.carts, { through: "CartVariants" });
-// db.cartvariants.belongsTo(db.carts);
-// db.cartvariants.belongsTo(db.variants);
+db.carts.belongsToMany(db.variants, { through: "CartVariants" });
+db.variants.belongsToMany(db.carts, { through: "CartVariants" });
+db.cartvariants.belongsTo(db.carts);
+db.cartvariants.belongsTo(db.variants);
 
-// db.users.hasOne(db.orders);
-// db.orders.belongsTo(db.users);
+db.users.hasOne(db.orders);
+db.orders.belongsTo(db.users);
 
-// db.orders.belongsToMany(db.variants, { through: "OrderVariants" });
-// db.variants.belongsToMany(db.orders, { through: "OrderVariants" });
-// db.ordervariants.belongsTo(db.orders);
-// db.ordervariants.belongsTo(db.variants);
+db.orders.belongsToMany(db.variants, { through: "OrderVariants" });
+db.variants.belongsToMany(db.orders, { through: "OrderVariants" });
+db.ordervariants.belongsTo(db.orders);
+db.ordervariants.belongsTo(db.variants);
 
 module.exports = db;

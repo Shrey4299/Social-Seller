@@ -8,7 +8,7 @@ const authenticate = require("../../../middlewares/authMiddleware");
 router.post(
   "/products/:id/variants/",
   authenticate("authenticated"),
-  checkVariantMiddleware,
+  // checkVariantMiddleware,
   variantsController.upload,
   variantsController.create
 );

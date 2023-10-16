@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const paymentsController = require("./controllers/paymentController");
-const checkPaymentMiddleware = require("./middlewares/checkPayment");
-const checkPaymentLog = require("./middlewares/checkPaymentLog");
+const paymentsController = require("../controllers/paymentLog");
+const checkPaymentMiddleware = require("../middlewares/checkPayment");
+const checkPaymentLog = require("../middlewares/checkPaymentLog");
 
-const authenticate = require("./middlewares/authMiddleware");
-
-
+const authenticate = require("../../../middlewares/authMiddleware");
 
 // Payment Routes
 router.get("/razorpay", paymentsController.renderProductPage);
@@ -22,7 +20,5 @@ router.post(
   checkPaymentLog,
   paymentsController.verifyPaymentWebhook
 );
-
-
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("../../../services");
 
 const checkPayment = async (req, res, next) => {
   try {

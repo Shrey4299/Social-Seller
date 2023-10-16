@@ -1,5 +1,6 @@
-const db = require("../models");
-const PaymentLog = require("../models/PaymentLog");
+const db = require("../../../services");
+
+const paymentLog = db.paymentlogs;
 
 const checkPaymentLog = async (req, res, next) => {
   try {

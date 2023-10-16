@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("../../../services");
 const Discount = db.discounts;
 
 exports.create = async (req, res) => {

@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("../../../services");
 
 const checkVariantQuantity = async (req, res, next) => {
   try {

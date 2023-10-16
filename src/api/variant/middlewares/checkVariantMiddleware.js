@@ -1,5 +1,6 @@
 // const Joi = require("joi");
-const { Variant } = require("../models");
+const db = require("../../../services");
+const Variant = db.variants;
 const FormData = require("form-data");
 const fs = require("fs");
 
