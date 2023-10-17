@@ -39,7 +39,14 @@ exports.findAll = async (req, res) => {
 };
 
 exports.findOne = async (req, res) => {
-  const id = req.params.id;
+  const id = req.user.id;
+
+  // Validate request
+  if (!id) {
+    return res.status(400).send({
+      message: "All fields are required!",
+    });
+  }
 
   try {
     const user = await User.findByPk(id);

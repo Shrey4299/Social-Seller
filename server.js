@@ -16,6 +16,7 @@ const orderRoutes = require("./src/api/order/routes/order");
 const cartRoutes = require("./src/api/cart/routes/cart");
 const paymentLogRoutes = require("./src/api/paymentlog/routes/paymentlog");
 const { sendTestEmail } = require("./src/services/emailSender");
+const cors = require("cors"); // Added this line
 
 // Setting up routes
 
@@ -25,6 +26,14 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 db.sequelize
   .sync()

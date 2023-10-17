@@ -4,6 +4,7 @@ const crypto = require("crypto");
 require("dotenv").config();
 const axios = require("axios");
 const fs = require("fs");
+const ejs = require("ejs");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
@@ -193,109 +194,131 @@ const verifyPaymentWebhook = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
   try {
-    const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+    const id = req.user.id;
 
-    // Send order confirmation email
-    await sendOrderConfirmationEmail(
-      "shreyanshdewangan4299@gmail.com",
-      htmlContent
-    );
+    console.log(id)
 
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      order_id,
-    } = req.body;
-
-    const generated_signature = crypto
-      .createHmac("sha256", RAZORPAY_SECRET_KEY)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
-
-    if (generated_signature !== razorpay_signature) {
-      await t.rollback();
-      t = undefined;
-
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid signature" });
-    }
-
-    const order = await db.orders.findByPk(order_id, { transaction: t });
-
-    if (!order) {
-      await t.rollback();
-      t = undefined;
-
-      return res
-        .status(400)
-        .json({ success: false, message: "Order not found" });
-    }
-
-    await order.update(
-      {
-        razorpayId: razorpay_payment_id,
-        razorpayOrderId: razorpay_order_id,
-        isPaid: true,
-        status: "accepted",
-        payment: "prepaid",
-      },
-      { transaction: t }
-    );
-
-    const orderVariants = await db.ordervariants.findAll(
-      {
-        where: {
-          OrderId: order_id,
-        },
-      },
-      { transaction: t }
-    );
-
-    for (const orderVariant of orderVariants) {
-      const variant = await db.variants.findByPk(orderVariant.VariantId, {
-        transaction: t,
+    // Validate request
+    if (!id) {
+      return res.status(400).send({
+        message: "All fields are required!",
       });
-
-      if (!variant) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Variant not found" });
-      }
-
-      let variantQuantity = variant.quantity;
-
-      await variant.update(
-        {
-          quantity: variantQuantity - orderVariant.quantity,
-        },
-        { transaction: t }
-      );
     }
 
-    // const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+    const user = await db.users.findByPk(id);
+    if (user) {
+      // return res.status(200).send(user);
+      console.log(user);
+    } else {
+      return res.status(204).send({
+        message: `User with id=${id} was not found.`,
+      });
+    }
 
-    // // Send order confirmation email
-    // await sendOrderConfirmationEmail(
-    //   "shreyanshdewangan4299@gmail.com",
-    //   htmlContent
-    // );
+    const price = 8000;
+    const slug = "18115414-cc9d-4d71-ace9-6294495b7f75";
+    const name = "shrey";
+    const discount = 200;
+    const email = user.email;
 
-    await t.commit();
-    t = undefined;
+    const htmlContent = fs.readFileSync("./views/orderTemplate.ejs", "utf8");
+    const renderedContent = ejs.render(htmlContent, {
+      price,
+      slug,
+      name,
+      discount,
+    });
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Payment successful" });
+    await sendOrderConfirmationEmail(email, renderedContent);
+
+    //   const {
+    //     razorpay_order_id,
+    //     razorpay_payment_id,
+    //     razorpay_signature,
+    //     order_id,
+    //   } = req.body;
+
+    //   const generated_signature = crypto
+    //     .createHmac("sha256", RAZORPAY_SECRET_KEY)
+    //     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+    //     .digest("hex");
+
+    //   if (generated_signature !== razorpay_signature) {
+    //     await t.rollback();
+    //     t = undefined;
+
+    //     return res
+    //       .status(400)
+    //       .json({ success: false, message: "Invalid signature" });
+    //   }
+
+    //   const order = await db.orders.findByPk(order_id, { transaction: t });
+
+    //   if (!order) {
+    //     await t.rollback();
+    //     t = undefined;
+
+    //     return res
+    //       .status(400)
+    //       .json({ success: false, message: "Order not found" });
+    //   }
+
+    //   await order.update(
+    //     {
+    //       razorpayId: razorpay_payment_id,
+    //       razorpayOrderId: razorpay_order_id,
+    //       isPaid: true,
+    //       status: "accepted",
+    //       payment: "prepaid",
+    //     },
+    //     { transaction: t }
+    //   );
+
+    //   const orderVariants = await db.ordervariants.findAll(
+    //     {
+    //       where: {
+    //         OrderId: order_id,
+    //       },
+    //     },
+    //     { transaction: t }
+    //   );
+
+    //   for (const orderVariant of orderVariants) {
+    //     const variant = await db.variants.findByPk(orderVariant.VariantId, {
+    //       transaction: t,
+    //     });
+
+    //     if (!variant) {
+    //       return res
+    //         .status(404)
+    //         .json({ success: false, message: "Variant not found" });
+    //     }
+
+    //     let variantQuantity = variant.quantity;
+
+    //     await variant.update(
+    //       {
+    //         quantity: variantQuantity - orderVariant.quantity,
+    //       },
+    //       { transaction: t }
+    //     );
+    //   }
+
+    //   // const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
+
+    //   // // Send order confirmation email
+    //   // await sendOrderConfirmationEmail(
+    //   //   "shreyanshdewangan4299@gmail.com",
+    //   //   htmlContent
+    //   // );
+
+    //   await t.commit();
+    //   t = undefined;
+
+    //   return res
+    //     .status(201)
+    //     .json({ success: true, message: "Payment successful" });
   } catch (error) {
-    const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
-
-    // Send order confirmation email
-    await sendOrderConfirmationEmail(
-      "shreyanshdewangan4299@gmail.com",
-      htmlContent
-    );
     console.error(error);
     await t.rollback();
     t = undefined;
