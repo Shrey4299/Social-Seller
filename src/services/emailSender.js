@@ -18,6 +18,7 @@ const sendOrderConfirmationEmail = (toEmail, htmlContent) => {
     html: htmlContent,
   };
 
+  console.log("email sent");
   return mailTransporter.sendMail(details);
 };
 

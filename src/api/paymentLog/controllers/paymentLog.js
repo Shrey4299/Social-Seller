@@ -6,6 +6,7 @@ const axios = require("axios");
 const fs = require("fs");
 const ejs = require("ejs");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
+const discount = require("../../discount/models/discount");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -124,6 +125,7 @@ const createOrder = async (req, res) => {
           name: "Shreyansh Dewangan",
           email: "shrey@gmail.com",
           mainId: mainId,
+          discount: discount.discountPercentage,
         });
       } else {
         console.error(err);
@@ -194,16 +196,90 @@ const verifyPaymentWebhook = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
   try {
+    console.log("entered in  varify payment");
+    console.log(req.user.id + " this is the user id");
+
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      order_id,
+      discountPrice,
+    } = req.body;
+
+    const generated_signature = crypto
+      .createHmac("sha256", RAZORPAY_SECRET_KEY)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (generated_signature !== razorpay_signature) {
+      await t.rollback();
+      t = undefined;
+
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid signature" });
+    }
+
+    const order = await db.orders.findByPk(order_id, { transaction: t });
+
+    if (!order) {
+      await t.rollback();
+      t = undefined;
+
+      return res
+        .status(400)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    await order.update(
+      {
+        razorpayId: razorpay_payment_id,
+        razorpayOrderId: razorpay_order_id,
+        isPaid: true,
+        status: "accepted",
+        payment: "prepaid",
+      },
+      { transaction: t }
+    );
+
+    const orderVariants = await db.ordervariants.findAll(
+      {
+        where: {
+          OrderId: order_id,
+        },
+      },
+      { transaction: t }
+    );
+
+    for (const orderVariant of orderVariants) {
+      const variant = await db.variants.findByPk(orderVariant.VariantId, {
+        transaction: t,
+      });
+
+      if (!variant) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Variant not found" });
+      }
+
+      let variantQuantity = variant.quantity;
+
+      await variant.update(
+        {
+          quantity: variantQuantity - orderVariant.quantity,
+        },
+        { transaction: t }
+      );
+    }
+
+    await t.commit();
+    t = undefined;
+
+    // const id = 1;
     const id = req.user.id;
 
-    console.log(id)
-
-    // Validate request
-    if (!id) {
-      return res.status(400).send({
-        message: "All fields are required!",
-      });
-    }
+    console.log(id);
 
     const user = await db.users.findByPk(id);
     if (user) {
@@ -215,11 +291,13 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    const price = 8000;
-    const slug = "18115414-cc9d-4d71-ace9-6294495b7f75";
-    const name = "shrey";
-    const discount = 200;
+    const price = order.price;
+    const slug = order.slug;
+    const name = user.name;
+    const discount = discountPrice;
     const email = user.email;
+
+    console.log(email);
 
     const htmlContent = fs.readFileSync("./views/orderTemplate.ejs", "utf8");
     const renderedContent = ejs.render(htmlContent, {
@@ -231,93 +309,9 @@ const verifyPayment = async (req, res) => {
 
     await sendOrderConfirmationEmail(email, renderedContent);
 
-    //   const {
-    //     razorpay_order_id,
-    //     razorpay_payment_id,
-    //     razorpay_signature,
-    //     order_id,
-    //   } = req.body;
-
-    //   const generated_signature = crypto
-    //     .createHmac("sha256", RAZORPAY_SECRET_KEY)
-    //     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-    //     .digest("hex");
-
-    //   if (generated_signature !== razorpay_signature) {
-    //     await t.rollback();
-    //     t = undefined;
-
-    //     return res
-    //       .status(400)
-    //       .json({ success: false, message: "Invalid signature" });
-    //   }
-
-    //   const order = await db.orders.findByPk(order_id, { transaction: t });
-
-    //   if (!order) {
-    //     await t.rollback();
-    //     t = undefined;
-
-    //     return res
-    //       .status(400)
-    //       .json({ success: false, message: "Order not found" });
-    //   }
-
-    //   await order.update(
-    //     {
-    //       razorpayId: razorpay_payment_id,
-    //       razorpayOrderId: razorpay_order_id,
-    //       isPaid: true,
-    //       status: "accepted",
-    //       payment: "prepaid",
-    //     },
-    //     { transaction: t }
-    //   );
-
-    //   const orderVariants = await db.ordervariants.findAll(
-    //     {
-    //       where: {
-    //         OrderId: order_id,
-    //       },
-    //     },
-    //     { transaction: t }
-    //   );
-
-    //   for (const orderVariant of orderVariants) {
-    //     const variant = await db.variants.findByPk(orderVariant.VariantId, {
-    //       transaction: t,
-    //     });
-
-    //     if (!variant) {
-    //       return res
-    //         .status(404)
-    //         .json({ success: false, message: "Variant not found" });
-    //     }
-
-    //     let variantQuantity = variant.quantity;
-
-    //     await variant.update(
-    //       {
-    //         quantity: variantQuantity - orderVariant.quantity,
-    //       },
-    //       { transaction: t }
-    //     );
-    //   }
-
-    //   // const htmlContent = fs.readFileSync("./views/orderTemplate.html", "utf8");
-
-    //   // // Send order confirmation email
-    //   // await sendOrderConfirmationEmail(
-    //   //   "shreyanshdewangan4299@gmail.com",
-    //   //   htmlContent
-    //   // );
-
-    //   await t.commit();
-    //   t = undefined;
-
-    //   return res
-    //     .status(201)
-    //     .json({ success: true, message: "Payment successful" });
+    return res
+      .status(201)
+      .json({ success: true, message: "Payment successful" });
   } catch (error) {
     console.error(error);
     await t.rollback();

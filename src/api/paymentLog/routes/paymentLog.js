@@ -14,10 +14,14 @@ router.post(
   // checkPaymentMiddleware,
   paymentsController.createOrder
 );
-router.post("/verifyPayment", authenticate, paymentsController.verifyPayment);
+
+router.post(
+  "/verifyPayment",
+  authenticate("authenticated"),
+  paymentsController.verifyPayment
+);
 router.post(
   "/verification",
-  authenticate,
   checkPaymentLog,
   paymentsController.verifyPaymentWebhook
 );
