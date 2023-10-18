@@ -97,6 +97,19 @@ exports.findOne = async (req, res) => {
     });
 
     if (data) {
+      // Extract reviews
+      const reviews = data.Reviews || [];
+
+      // Calculate average rating
+      const totalRatings = reviews.reduce(
+        (sum, review) => sum + review.rating,
+        0
+      );
+      const averageRating = totalRatings / (reviews.length || 1);
+
+      // Add average rating to the data object
+      data.setDataValue("averageRating", averageRating);
+
       return res.status(200).send(data);
     } else {
       return res.status(204).send({

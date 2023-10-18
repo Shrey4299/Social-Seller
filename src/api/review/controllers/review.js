@@ -9,12 +9,6 @@ exports.createReview = async (req, res) => {
     const ProductId = req.params.id;
     const UserId = req.user.id;
 
-    if (!description || !rating || !UserId || !ProductId) {
-      return res.status(400).send({
-        message: "All fields are required!",
-      });
-    }
-
     const review = await Review.create({
       description: description,
       rating: rating,
@@ -22,7 +16,7 @@ exports.createReview = async (req, res) => {
       ProductId: ProductId,
     });
 
-    return res.status(201).send(review); // Added status code and return
+    return res.status(201).send(review); 
   } catch (error) {
     console.error(error);
     return res.status(500).send({
@@ -32,4 +26,3 @@ exports.createReview = async (req, res) => {
   }
 };
 
-// Add similar functions for updating, deleting, and retrieving reviews.

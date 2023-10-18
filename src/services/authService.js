@@ -8,7 +8,7 @@ const generateToken = (user) => {
 
   const AUTH_SECRET = process.env.AUTH_SECRET;
 
-  return jwt.sign(payload, AUTH_SECRET, { expiresIn: "24h" });
+  return jwt.sign(payload, AUTH_SECRET, { expiresIn: "7d" });
 };
 
 module.exports = generateToken;

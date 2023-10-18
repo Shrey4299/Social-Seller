@@ -5,13 +5,6 @@ exports.create = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Validate request
-    if (!name) {
-      return res.status(400).send({
-        message: "Category name cannot be empty!",
-      });
-    }
-
     const category = await Category.create({
       name: name,
     });

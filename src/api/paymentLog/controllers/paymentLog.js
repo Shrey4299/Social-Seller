@@ -7,6 +7,7 @@ const fs = require("fs");
 const ejs = require("ejs");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
 const discount = require("../../discount/models/discount");
+const { getOrderData } = require("../services/createOrderData");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -33,57 +34,24 @@ const renderPaymentGateway = async (req, res) => {
   }
 };
 
-let t;
-console.log(t);
-db.sequelize
-  .transaction()
-  .then((result) => {
-    t = result;
-  })
-  .catch((err) => {
-    throw err;
-  });
-
 const createOrder = async (req, res) => {
   try {
     console.log("from create order");
-    const { payment, couponCode, UserId, VariantId, quantity } = req.body;
+    const { payment, UserId, VariantId, quantity, couponCode } = req.body;
 
-    if (!UserId || !payment) {
-      await t.rollback();
-      t = undefined;
+    const orderData = await getOrderData(
+      couponCode,
+      VariantId,
+      quantity,
+      UserId,
+      payment
+    );
 
-      return res.status(400).send({
-        message: "User and payment method are required fields!",
-      });
-    }
+    const createdOrder = await db.orders.create(orderData);
 
-    const discount = await db.discounts.findOne({
-      where: { name: couponCode },
-    });
+    const order = await db.orders.findByPk(createdOrder.id);
 
     const variant = await db.variants.findByPk(VariantId);
-
-    const finalPrice = discount
-      ? variant.price * quantity - discount.discountPercentage
-      : variant.price * quantity;
-
-    const address = await db.address.findOne({
-      where: { UserId: UserId },
-    });
-
-    const orderData = {
-      price: finalPrice,
-      UserId: UserId,
-      payment: payment,
-      status: "new",
-      address: address.id,
-      isPaid: false,
-    };
-
-    const createdOrder = await db.orders.create(orderData, { transaction: t });
-
-    const order = await db.orders.findByPk(createdOrder.id, { transaction: t });
 
     const [orderVariant, created] = await db.ordervariants.findOrCreate({
       where: {
@@ -96,11 +64,10 @@ const createOrder = async (req, res) => {
         OrderId: order.id,
         VariantId: VariantId,
       },
-      transaction: t,
     });
 
     const newPrice = order.price + quantity * variant.price;
-    await order.update({ price: newPrice }, { transaction: t });
+    await order.update({ price: newPrice });
 
     const amount = newPrice * 100;
     const mainId = order.id;
@@ -129,16 +96,10 @@ const createOrder = async (req, res) => {
         });
       } else {
         console.error(err);
-        await t.rollback();
-        t = undefined;
-
         res.status(400).send({ success: false, msg: "Something went wrong!" });
       }
     });
   } catch (err) {
-    await t.rollback();
-    t = undefined;
-
     console.error(err);
     return res.status(500).send({ message: "Internal Server Error" });
   }
@@ -154,31 +115,28 @@ const verifyPaymentWebhook = async (req, res) => {
     if (digest === req.headers["x-razorpay-signature"]) {
       const paymentData = req.body.payload.payment.entity;
 
-      const paymentLog = await db.paymentlogs.create(
-        {
-          account_id: req.body.account_id,
-          id: paymentData.id,
-          amount: paymentData.amount,
-          currency: paymentData.currency,
-          status: paymentData.status,
-          order_id: paymentData.order_id,
-          method: paymentData.method,
-          card: paymentData.card,
-          description: paymentData.description,
-          card_id: paymentData.card_id,
-          bank: paymentData.bank,
-          wallet: paymentData.wallet,
-          vpa: paymentData.vpa,
-          email: paymentData.email,
-          contact: paymentData.contact,
-          error_code: paymentData.error_code,
-          error_description: paymentData.error_description,
-          acquirer_data: paymentData.acquirer_data,
-          upi: paymentData.upi,
-          base_amount: paymentData.base_amount || paymentData.amount,
-        },
-        { transaction: t }
-      );
+      const paymentLog = await db.paymentlogs.create({
+        account_id: req.body.account_id,
+        id: paymentData.id,
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+        status: paymentData.status,
+        order_id: paymentData.order_id,
+        method: paymentData.method,
+        card: paymentData.card,
+        description: paymentData.description,
+        card_id: paymentData.card_id,
+        bank: paymentData.bank,
+        wallet: paymentData.wallet,
+        vpa: paymentData.vpa,
+        email: paymentData.email,
+        contact: paymentData.contact,
+        error_code: paymentData.error_code,
+        error_description: paymentData.error_description,
+        acquirer_data: paymentData.acquirer_data,
+        upi: paymentData.upi,
+        base_amount: paymentData.base_amount || paymentData.amount,
+      });
 
       console.log("Payment Log Created:", paymentLog);
     } else {
@@ -187,8 +145,6 @@ const verifyPaymentWebhook = async (req, res) => {
 
     res.json({ status: "ok" });
   } catch (error) {
-    await t.rollback();
-    t = undefined;
     console.error("Error processing webhook:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -213,49 +169,35 @@ const verifyPayment = async (req, res) => {
       .digest("hex");
 
     if (generated_signature !== razorpay_signature) {
-      await t.rollback();
-      t = undefined;
-
       return res
         .status(400)
         .json({ success: false, message: "Invalid signature" });
     }
 
-    const order = await db.orders.findByPk(order_id, { transaction: t });
+    const order = await db.orders.findByPk(order_id);
 
     if (!order) {
-      await t.rollback();
-      t = undefined;
-
       return res
         .status(400)
         .json({ success: false, message: "Order not found" });
     }
 
-    await order.update(
-      {
-        razorpayId: razorpay_payment_id,
-        razorpayOrderId: razorpay_order_id,
-        isPaid: true,
-        status: "accepted",
-        payment: "prepaid",
-      },
-      { transaction: t }
-    );
+    await order.update({
+      razorpayId: razorpay_payment_id,
+      razorpayOrderId: razorpay_order_id,
+      isPaid: true,
+      status: "accepted",
+      payment: "prepaid",
+    });
 
-    const orderVariants = await db.ordervariants.findAll(
-      {
-        where: {
-          OrderId: order_id,
-        },
+    const orderVariants = await db.ordervariants.findAll({
+      where: {
+        OrderId: order_id,
       },
-      { transaction: t }
-    );
+    });
 
     for (const orderVariant of orderVariants) {
-      const variant = await db.variants.findByPk(orderVariant.VariantId, {
-        transaction: t,
-      });
+      const variant = await db.variants.findByPk(orderVariant.VariantId);
 
       if (!variant) {
         return res
@@ -265,25 +207,17 @@ const verifyPayment = async (req, res) => {
 
       let variantQuantity = variant.quantity;
 
-      await variant.update(
-        {
-          quantity: variantQuantity - orderVariant.quantity,
-        },
-        { transaction: t }
-      );
+      await variant.update({
+        quantity: variantQuantity - orderVariant.quantity,
+      });
     }
 
-    await t.commit();
-    t = undefined;
-
-    // const id = 1;
     const id = req.user.id;
 
     console.log(id);
 
     const user = await db.users.findByPk(id);
     if (user) {
-      // return res.status(200).send(user);
       console.log(user);
     } else {
       return res.status(204).send({
@@ -314,8 +248,6 @@ const verifyPayment = async (req, res) => {
       .json({ success: true, message: "Payment successful" });
   } catch (error) {
     console.error(error);
-    await t.rollback();
-    t = undefined;
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });

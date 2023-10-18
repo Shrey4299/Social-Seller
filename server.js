@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const morgan = require("morgan");
+const cors = require("cors"); // Added this line
 
 const db = require("./src/services/index");
 const globalNotFoundHandler = require("./src/middlewares/globalNotFoundHandler");
@@ -15,12 +17,14 @@ const variantRoutes = require("./src/api/variant/routes/variant");
 const orderRoutes = require("./src/api/order/routes/order");
 const cartRoutes = require("./src/api/cart/routes/cart");
 const paymentLogRoutes = require("./src/api/paymentlog/routes/paymentlog");
+const discountRoutes = require("./src/api/discount/routes/discount");
+const reviewRoutes = require("./src/api/review/routes/review");
 const { sendTestEmail } = require("./src/services/emailSender");
-const cors = require("cors"); // Added this line
 
 // Setting up routes
 
 const app = express();
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -73,6 +77,8 @@ app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentLogRoutes);
 app.use("/api", variantRoutes);
+app.use("/api", discountRoutes);
+app.use("/api", reviewRoutes);
 
 // Add globalNotFoundHandler as the last middleware
 app.use(globalNotFoundHandler);

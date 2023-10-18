@@ -1,6 +1,5 @@
 const db = require("../../../services");
 
-const paymentLog = db.paymentlogs;
 
 const checkPaymentLog = async (req, res, next) => {
   try {

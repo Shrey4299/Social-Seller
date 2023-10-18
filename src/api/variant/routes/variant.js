@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const variantsController = require("../controllers/variant");
-const checkVariantMiddleware = require("../middlewares/checkVariantMiddleware");
+const checkVariantMiddleware = require("../middlewares/variant");
 const authenticate = require("../../../middlewares/authMiddleware");
 
 // Variants

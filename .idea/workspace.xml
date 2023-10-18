@@ -5,22 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ab78c1f-4198-4de3-a787-1ef0d5f80020" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/App.test.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/firebase.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/phone_otp_verification_react_firebase/src/firebase.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/cart/routes/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/cart/routes/cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/discount/controllers/discount.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/discount/controllers/discount.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/order/routes/order.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/order/routes/order.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/paymentLog/controllers/paymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/controllers/paymentLog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPaymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPaymentLog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/paymentLog/middlewares/checkPayment.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/paymentLog/routes/paymentLog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/paymentLog/routes/paymentLog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/variant/controllers/variant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/controllers/variant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantMiddleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantMiddleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantQuantity .js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/middlewares/checkVariantQuantity .js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/variant/routes/variant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/variant/routes/variant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

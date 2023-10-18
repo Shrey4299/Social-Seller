@@ -5,13 +5,6 @@ exports.create = async (req, res) => {
   try {
     const { name, validity, discountPercentage } = req.body;
 
-    // Validate request
-    if (!name || !discountPercentage) {
-      return res.status(400).send({
-        message: "Name and discountPercentage are required fields!",
-      });
-    }
-
     const discount = await Discount.create({
       name: name,
       validity: validity,
