@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const ordersController = require("../controllers/order");
-const checkVariantQuantity = require("../../variant/middlewares/checkVariantQuantity ");
 
 const authenticate = require("../../../middlewares/authMiddleware");
 
@@ -13,7 +12,6 @@ router.post("/orders", authenticate("authenticated"), ordersController.create);
 router.post(
   "/orderVariants",
   authenticate("authenticated"),
-  checkVariantQuantity,
   ordersController.createVariantOrder
 );
 

@@ -3,6 +3,8 @@ const Order = db.orders;
 const Discount = db.discounts;
 const Address = db.address;
 const OrderVariant = db.ordervariants;
+const { getPagination, getMeta } = require("../../../../utils/pagination");
+
 
 exports.create = async (req, res) => {
   try {
@@ -56,13 +58,23 @@ exports.create = async (req, res) => {
   }
 };
 
+
 exports.findAll = async (req, res) => {
   try {
-    const data = await Order.findAll();
-    res.status(200).send(data);
-  } catch (err) {
-    res.status(500).send({
-      message: err.message || "Some error occurred while retrieving orders.",
+    const { page, pageSize } = req.query;
+    const pagination = await getPagination({ page, pageSize });
+
+    const orders = await Order.findAndCountAll({
+      offset: pagination.offset,
+      limit: pagination.limit,
+    });
+
+    const meta = await getMeta(pagination, orders.count);
+
+    return res.status(200).send({ data: orders.rows, meta });
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message || "Some error occurred while retrieving orders.",
     });
   }
 };

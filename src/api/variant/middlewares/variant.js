@@ -1,45 +1,43 @@
-// const Joi = require("joi");
-const db = require("../../../services");
-const Variant = db.variants;
-const FormData = require("form-data");
-const fs = require("fs");
+const Joi = require("joi");
 
-const checkVariantMiddleware = async (req, res, next) => {
-  try {
-    let data = new FormData();
-    data.append("image", fs.createReadStream("../uploads/1695283878824.jpg"));
-    data.append("color", "brown");
-    data.append("size", "medium");
-    data.append("price", "4500");
-    data.append("quantity", "25");
-    data.append("ProductId", "1");
-    // const schema = Joi.object({
-    //   color: Joi.string().required(),
-    //   size: Joi.string().required(),
-    //   quantity: Joi.number().integer().min(1).required(),
-    //   price: Joi.number().positive().required(),
-    //   image: Joi.string().optional(),
-    // });
-    console.log("Request Body");
-    console.log(data);
-    // const { error, value } = schema.validate(req.body);
-
-    // if (error) {
-    //   return res.status(400).send({
-    //     message: error.details[0].message,
-    //   });
-    // }
-
-    // const variant = await Variant.build(value);
-
-    // req.variant = variant;
-    // next();
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
-      message: "Internal Server Error",
+module.exports = {
+  async validateVariantCreate(req, res, next) {
+    const variantSchema = Joi.object({
+      color: Joi.string().required(),
+      size: Joi.string().required(),
+      quantity: Joi.number().required().integer().positive(),
+      price: Joi.number().required().integer().positive(),
+      image: Joi.string().optional(),
     });
-  }
-};
 
-module.exports = checkVariantMiddleware;
+    const { error } = variantSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).send({
+        message: error.details[0].message,
+      });
+    }
+
+    next();
+  },
+
+  async validateVariantUpdate(req, res, next) {
+    const variantSchema = Joi.object({
+      color: Joi.string().optional(),
+      size: Joi.string().optional(),
+      quantity: Joi.number().optional().integer().positive(),
+      price: Joi.number().optional().integer().positive(),
+      image: Joi.string().optional(),
+    });
+
+    const { error } = variantSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).send({
+        message: error.details[0].message,
+      });
+    }
+
+    next();
+  },
+};

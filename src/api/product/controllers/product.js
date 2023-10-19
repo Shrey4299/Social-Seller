@@ -1,6 +1,8 @@
 const db = require("../../../services");
+const Sequelize = db.Sequelize;
 const Product = db.products;
-const paginate = require("../../../../utils/pagination");
+const { getPagination, getMeta } = require("../../../../utils/pagination");
+const { json } = require("body-parser");
 
 exports.create = async (req, res) => {
   try {
@@ -30,17 +32,19 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   try {
     const { page, pageSize } = req.query;
-    const { offset, limit } = paginate({ page, pageSize });
-    const products = await Product.findAll({
-      offset,
-      limit,
+    const pagination = await getPagination({ page, pageSize });
+    const products = await Product.findAndCountAll({
+      offset: pagination.offset,
+      limit: pagination.limit,
       include: [
         { model: db.variants, as: "Variant" },
         { model: db.reviews, as: "Reviews" },
       ],
     });
 
-    return res.status(200).send(products);
+    const meta = await getMeta(pagination, products.count);
+
+    return res.status(200).send({ data: products.rows, meta });
   } catch (error) {
     console.error(error);
     return res.status(400).send({
@@ -97,20 +101,19 @@ exports.findOne = async (req, res) => {
     });
 
     if (data) {
-      // Extract reviews
-      const reviews = data.Reviews || [];
+      const averageRating = await db.reviews.findOne({
+        attributes: [
+          [Sequelize.fn("AVG", Sequelize.col("rating")), "averageRating"],
+        ],
+        where: {
+          ProductId: id,
+        },
+      });
 
-      // Calculate average rating
-      const totalRatings = reviews.reduce(
-        (sum, review) => sum + review.rating,
-        0
-      );
-      const averageRating = totalRatings / (reviews.length || 1);
+      // data.setDataValue("averageRating", averageRating.averageRating);
 
-      // Add average rating to the data object
-      data.setDataValue("averageRating", averageRating);
-
-      return res.status(200).send(data);
+      console.log(JSON.stringify(averageRating) + "this is average rating");
+      return res.status(200).send({ data, averageRating });
     } else {
       return res.status(204).send({
         message: `Product with id=${id} was not found.`,

@@ -1,18 +1,31 @@
-function paginate({ page = 0, pageSize = 10 }) {
-  page = parseInt(page);
-  pageSize = parseInt(pageSize);
-
-  if (isNaN(page) || isNaN(pageSize) || page < 0 || pageSize < 1) {
-    throw new Error("Invalid page or pageSize parameters");
-  }
-
-  const offset = page * pageSize;
-  const limit = pageSize;
-
-  return {
-    offset,
-    limit,
-  };
-}
-
-module.exports = paginate;
+module.exports = {
+  getPagination: async (pagination = { pagination: null }) => {
+    if (pagination.hasOwnProperty("page")) {
+      let pageSize =
+        pagination.pageSize <= 0
+          ? 25
+          : pagination.pageSize === (undefined || null)
+          ? 25
+          : pagination.pageSize;
+      let page = parseInt(pagination.page <= 0 ? 1 : pagination.page);
+      let offset = (page - 1) * pageSize;
+      let limit = pageSize;
+      return { offset, limit, pageSize, page };
+    } else return { offset: null, limit: null, page: 1, pageSize: 25 };
+  },
+  getMeta: async (pagination, count) => {
+    try {
+      const { page, pageSize } = pagination;
+      return {
+        pagination: {
+          page: parseInt(page),
+          pageSize: parseInt(pageSize || count),
+          pageCount: Math.ceil(count / (pageSize || count)),
+          total: count,
+        },
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  },
+};

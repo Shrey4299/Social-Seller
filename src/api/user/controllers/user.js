@@ -5,6 +5,8 @@ const fs = require("fs");
 const ejs = require("ejs");
 const bcrypt = require("bcrypt");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
+const { getPagination, getMeta } = require("../../../../utils/pagination");
+
 // Create a new user
 exports.create = async (req, res) => {
   try {
@@ -40,13 +42,21 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const users = await User.findAll({
+    const { page, pageSize } = req.query;
+    const pagination = await getPagination({ page, pageSize });
+
+    const users = await User.findAndCountAll({
+      offset: pagination.offset,
+      limit: pagination.limit,
       include: [
         { model: db.address, as: "Address" },
         { model: db.roles, as: "Role" },
       ],
     });
-    return res.status(200).send(users);
+
+    const meta = await getMeta(pagination, users.count);
+
+    return res.status(200).send({ data: users.rows, meta });
   } catch (error) {
     return res.status(500).send({
       message: error.message || "Some error occurred while retrieving users.",
