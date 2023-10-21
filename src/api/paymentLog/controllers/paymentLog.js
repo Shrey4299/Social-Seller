@@ -243,6 +243,8 @@ const verifyPayment = async (req, res) => {
 
     await sendOrderConfirmationEmail(email, renderedContent);
 
+    io.emit("paymentSuccess", { message: "Payment successful" });
+
     return res
       .status(201)
       .json({ success: true, message: "Payment successful" });

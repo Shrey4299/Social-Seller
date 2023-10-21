@@ -86,7 +86,42 @@
       </form>
     </div>
 
+    <!-- Include Socket.IO script -->
+    <script src="/socket.io/socket.io.js"></script>
+
     <script>
+      const socket = io();
+      socket.on("welcome", (msg) => {
+        console.log(msg);
+      });
+
+      // let count = 0;
+      // setInterval(() => {
+      //   socket.volatile.emit("ping", ++count);
+      // }, 100);
+
+      socket.on("sampleMessage", (msg) => {
+        console.log(msg); // This will print "You are in the home route!"
+      });
+
+      // socket.emit("hello", "world");
+      socket.emit("server_initialized", "server_initialized");
+
+      socket.emit("update item", "1", { name: "updated" }, (response) => {
+        console.log(response.status); // ok
+      });
+
+      socket.on("hello", (arg1, arg2, arg3) => {
+        console.log(arg1); // 1
+        console.log(arg2); // "2"
+        console.log(arg3); // { 3: '4', 5: ArrayBuffer (1) [ 6 ] }
+      });
+
+      socket.on("userFetched", (data) => {
+        console.log(data);
+        console.log("UserFetched", data.message);
+      });
+
       document
         .getElementById("paymentForm")
         .addEventListener("submit", function (e) {
@@ -100,6 +135,9 @@
           } else if (selectedMethod === "phonepe") {
             window.location.href = "http://localhost:8080/api/phonepe";
           }
+          socket.emit("paymentSelected", { payment_method: selectedMethod });
+
+          // Emit an event to the server
         });
     </script>
   </body>

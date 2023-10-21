@@ -6,7 +6,7 @@ const ejs = require("ejs");
 const bcrypt = require("bcrypt");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
 const { getPagination, getMeta } = require("../../../../utils/pagination");
-
+const { io } = require("../../../../server");
 // Create a new user
 exports.create = async (req, res) => {
   try {
@@ -79,6 +79,8 @@ exports.findOne = async (req, res) => {
     if (user) {
       return res.status(200).send(user);
     } else {
+      io.emit("userFetched", { message: "user fetched" });
+
       return res.status(204).send({
         message: `User with id=${id} was not found.`,
       });

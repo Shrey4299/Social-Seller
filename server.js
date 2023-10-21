@@ -4,7 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const morgan = require("morgan");
-const cors = require("cors"); // Added this line
+const cors = require("cors");
+
+const { server, app } = require("./http");
 
 const db = require("./src/services/index");
 const globalNotFoundHandler = require("./src/middlewares/globalNotFoundHandler");
@@ -19,18 +21,14 @@ const cartRoutes = require("./src/api/cart/routes/cart");
 const paymentLogRoutes = require("./src/api/paymentlog/routes/paymentlog");
 const discountRoutes = require("./src/api/discount/routes/discount");
 const reviewRoutes = require("./src/api/review/routes/review");
-const { sendTestEmail } = require("./src/services/emailSender");
+const sampleRoutes = require("./src/api/sample/routes/sample");
 
-// Setting up routes
-
-const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -38,10 +36,8 @@ app.use(
     credentials: true,
   })
 );
-
 db.sequelize
   .sync()
-  // .sync({ force: true })
   .then(() => {
     console.log("Synced db.");
   })
@@ -51,23 +47,16 @@ db.sequelize
 
 app.use("/public/uploads", express.static("./public/uploads"));
 
-const SENDER_EMAIL_ID = "shreyansh.socialseller@gmail.com";
+const initializeSocketServer = require("./utils/socketModule");
+const io = initializeSocketServer(server);
 
-app.get("/send-email", async (_, res) => {
-  try {
-    if (SENDER_EMAIL_ID === "EMAIL_ID") {
-      throw new Error(
-        "Please update SENDER_EMAIL_ID with your email id in server.js"
-      );
-    }
-    const info = await sendTestEmail(SENDER_EMAIL_ID);
-    res.send(info);
-  } catch (error) {
-    res.send(error);
-  }
-});
+// app.post("/api/xyz", (req, res) => {
+//   res.send("Welcome to the server!");
 
-// Define your routes
+//   // Emit a message to the client when they hit the home route
+//   io.emit("sampleMessage", "You are in the xyz route!");
+// });
+
 app.use("/api", userRoutes);
 app.use("/api", addressRoutes);
 app.use("/api", roleRoutes);
@@ -79,11 +68,15 @@ app.use("/api", paymentLogRoutes);
 app.use("/api", variantRoutes);
 app.use("/api", discountRoutes);
 app.use("/api", reviewRoutes);
+app.use("/api", sampleRoutes);
 
-// Add globalNotFoundHandler as the last middleware
 app.use(globalNotFoundHandler);
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+// Socket.IO Logic
+
+module.exports = { app, io };

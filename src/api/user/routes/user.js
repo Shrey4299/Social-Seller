@@ -6,6 +6,7 @@ const authPhoneController = require("../../../services/authPhoneController");
 const validateUser = require("../middlewares/user");
 
 const authenticate = require("../../../middlewares/authMiddleware");
+const authenticateFirebase = require("../../../middlewares/firebaseMiddleware");
 
 // User Routes
 router.post("/users", validateUser.validateUserCreate, usersController.create);
@@ -24,6 +25,10 @@ router.post(
   usersController.resetPassword
 );
 router.post("/login", authController.login);
-router.post("/phoneLogin", authPhoneController.phoneLogin);
+router.post(
+  "/phoneLogin",
+  authenticateFirebase,
+  authPhoneController.phoneLogin
+);
 
 module.exports = router;
