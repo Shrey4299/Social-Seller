@@ -50,12 +50,6 @@ app.use("/public/uploads", express.static("./public/uploads"));
 const initializeSocketServer = require("./utils/socketModule");
 const io = initializeSocketServer(server);
 
-// app.post("/api/xyz", (req, res) => {
-//   res.send("Welcome to the server!");
-
-//   // Emit a message to the client when they hit the home route
-//   io.emit("sampleMessage", "You are in the xyz route!");
-// });
 
 app.use("/api", userRoutes);
 app.use("/api", addressRoutes);
@@ -77,6 +71,5 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-// Socket.IO Logic
 
 module.exports = { app, io };

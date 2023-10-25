@@ -6,7 +6,8 @@ const ejs = require("ejs");
 const bcrypt = require("bcrypt");
 const { sendOrderConfirmationEmail } = require("../../../services/emailSender");
 const { getPagination, getMeta } = require("../../../../utils/pagination");
-const { io } = require("../../../../server");
+const admin = require("../../../../config/firebaseConfig");
+
 // Create a new user
 exports.create = async (req, res) => {
   try {
@@ -31,6 +32,29 @@ exports.create = async (req, res) => {
 
     await sendOrderConfirmationEmail(email, renderedContent);
 
+    const registrationToken =
+      "fJTTL0EVXZo6_tdNsUytRY:APA91bH5LstGlPSY_LQPfP8hFCDpIUmYF8o4Ct5qR1vgctcxYxTRfVscCRsjmscoOdSEuO8skY3MgKrQ7k5VBeRe-vgmvC9oXnPlP7Pc65UQTyoI0F5Vvd-vo5fa99lIDIFVNUd5WHI6";
+
+    const message = {
+      token: registrationToken,
+      notification: {
+        title: "User",
+        body: "User is created successfully!",
+      },
+    };
+
+    const messaging = admin.messaging();
+
+    messaging
+      .send(message)
+      .then((response) => {
+        console.log("Successfully sent message:", response);
+        res.send("Message sent successfully!");
+      })
+      .catch((error) => {
+        console.log("Error sending message:", error);
+        res.status(500).send("Error sending message");
+      });
     return res.status(201).send(createdUser);
   } catch (error) {
     console.error(error);
